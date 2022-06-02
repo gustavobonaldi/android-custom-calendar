@@ -10,6 +10,7 @@ import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.databinding.CustomCalendarLayoutBinding
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
+import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
 import br.com.bonaldi.customcalendar.models.day.CalendarMonthViewType
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
@@ -26,12 +27,15 @@ class CustomCalendar : ConstraintLayout {
         setAttributes(attrs)
     }
 
+    private var selectionType: CalendarSelectionTypeEnum = CalendarSelectionTypeEnum.SINGLE
+    private var calendarViewType: CalendarViewTypeEnum = CalendarViewTypeEnum.LIST
     private var selectedDate: CalendarDayInfo? = null
     private var selectedDates: MutableList<CalendarDayInfo> = mutableListOf()
     private var minDate: CalendarDayInfo = getTodayDate()
     private var maxDate: CalendarDayInfo? = null
     private var currentDate: CalendarDayInfo? = null
-    private var selectionType: CalendarSelectionTypeEnum = CalendarSelectionTypeEnum.SINGLE
+    private var maxMultiSelectionDates: Int? = null
+    private var onCalendarChangedListener: OnCalendarChangedListener? = null
 
 
     private val binding = CustomCalendarLayoutBinding.inflate(
@@ -56,6 +60,10 @@ class CustomCalendar : ConstraintLayout {
                 0
             )]
 
+            typedArray.getInt(R.styleable.CustomCalendar_maxMultiSelectionDates, 0).takeIf { it != 0 }?.let {
+                setMaxMultiSelectionDates(it)
+            }
+
             setCalendarViewType(calendarViewType)
             setCalendarSelectionType(selectionType)
             setupView()
@@ -72,6 +80,10 @@ class CustomCalendar : ConstraintLayout {
     fun setMaxDate(calendarDay: CalendarDayInfo){
         this.maxDate = calendarDay
         getCalendarAllowedDates()
+    }
+
+    fun setOnCalendarChangedListener(onCalendarChangedListener: OnCalendarChangedListener){
+        this.onCalendarChangedListener = onCalendarChangedListener
     }
 
     private fun getCalendarAllowedDates(){
@@ -111,20 +123,34 @@ class CustomCalendar : ConstraintLayout {
     }
 
     private fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
-        selectionType = type
+        this.selectionType = type
+    }
+
+    private fun setMaxMultiSelectionDates(max: Int){
+        this.maxMultiSelectionDates = max
     }
 
     private val calendarListener = object: CalendarAdapterListener {
+        override fun getCalendarSelectionType(): CalendarSelectionTypeEnum {
+            return this@CustomCalendar.selectionType
+        }
+
+        override fun getMaxMultiSelectionDates(): Int? {
+            return this@CustomCalendar.maxMultiSelectionDates
+        }
+
         override fun onSelectDates(list: List<CalendarDayInfo>) {
             this@CustomCalendar.selectedDates = list.toMutableList()
+            onCalendarChangedListener?.onSelectDates(list)
         }
 
         override fun onSelectDate(date: CalendarDayInfo) {
             this@CustomCalendar.selectedDate = date
+            onCalendarChangedListener?.onSelectDate(date)
         }
 
-        override fun getCalendarSelectionType(): CalendarSelectionTypeEnum {
-            return selectionType
+        override fun onMaxSelectionReach(selectedQuantity: Int) {
+            onCalendarChangedListener?.onMaxSelectionReach(selectedQuantity)
         }
     }
 }

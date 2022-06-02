@@ -5,6 +5,7 @@
       <map>
         <entry key="_example-calendar/src/main/res/layout/fragment_first.xml" value="0.4026268115942029" />
         <entry key="customcalendar/src/main/res/layout/calendar_day_item.xml" value="0.4702186695043591" />
+        <entry key="customcalendar/src/main/res/layout/calendar_day_item_empty.xml" value="0.24947916666666667" />
         <entry key="customcalendar/src/main/res/layout/calendar_month_item.xml" value="0.4026268115942029" />
         <entry key="customcalendar/src/main/res/layout/custom_calendar_layout.xml" value="0.2261904761904762" />
       </map>

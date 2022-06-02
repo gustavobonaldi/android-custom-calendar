@@ -11,5 +11,6 @@
             <enum name="Multiple" value="1"/>
             <enum name="Range" value="2"/>
         </attr>
+        <attr name="maxMultiSelectionDates" format="integer"/>
     </declare-styleable>
 </resources>

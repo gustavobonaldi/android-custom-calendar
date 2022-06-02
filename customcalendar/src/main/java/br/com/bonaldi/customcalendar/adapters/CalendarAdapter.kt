@@ -1,7 +1,6 @@
 package br.com.bonaldi.customcalendar.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -15,25 +14,30 @@ import br.com.bonaldi.customcalendar.helpers.DateHelper.calendarToCalendarDayInf
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getFirstDateOfMonth
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
-import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
-import br.com.bonaldi.customcalendar.models.day.CalendarMonthViewType
+import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem.CalendarViewType
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapter<CalendarDayListItem, RecyclerView.ViewHolder>(MonthAdapterDiffer) {
     private val weekDaysList = mutableListOf<CalendarDayListItem>(
-        CalendarDayListItem.CalendarWeekDay("D"),
-        CalendarDayListItem.CalendarWeekDay("S"),
-        CalendarDayListItem.CalendarWeekDay("T"),
-        CalendarDayListItem.CalendarWeekDay("Q"),
-        CalendarDayListItem.CalendarWeekDay("Q"),
-        CalendarDayListItem.CalendarWeekDay("S"),
-        CalendarDayListItem.CalendarWeekDay("S"),
+        CalendarDayListItem.CalendarWeekDayItem("D"),
+        CalendarDayListItem.CalendarWeekDayItem("S"),
+        CalendarDayListItem.CalendarWeekDayItem("T"),
+        CalendarDayListItem.CalendarWeekDayItem("Q"),
+        CalendarDayListItem.CalendarWeekDayItem("Q"),
+        CalendarDayListItem.CalendarWeekDayItem("S"),
+        CalendarDayListItem.CalendarWeekDayItem("S"),
     )
     private var calendarDaysList = mutableListOf<CalendarDayListItem>()
     private var emptyStateCount: Int = 0
+
+    private val selectedDates: List<CalendarDayListItem>
+        get() = currentList.filter { it.isSelected }
+
+    private val selectedDate: CalendarDayListItem?
+        get() = currentList.firstOrNull { it.isSelected }
 
     fun setMonthItem(monthList: List<Int>) {
         monthList.map {
@@ -47,7 +51,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     private fun setupMonth(month: Int){
         val calendar = getFirstDateOfMonth(month)
         emptyStateCount = 0
-        calendarDaysList.add(CalendarDayListItem.CalendarMonthName(getCurrentMonthName(month)))
+        calendarDaysList.add(CalendarDayListItem.CalendarMonthHeaderItem(getCurrentMonthName(month)))
         mapDaysFromMonthAndAdd(calendar)
     }
 
@@ -58,7 +62,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         addEmptyDatesRecursive(calendar)
         for (i in currentDate..maxMonthDate) {
             calendarDaysList.add(
-                CalendarDayListItem.CalendarDay(
+                CalendarDayListItem.CalendarDayItem(
                     calendarToCalendarDayInfo(calendar),
                     isSelected = false
                 )
@@ -78,20 +82,20 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         val currentMonthDay = calendar.get(Calendar.DAY_OF_MONTH)
         val calendarStartWeekDay = calendar.get(Calendar.DAY_OF_WEEK)
         if ((currentMonthDay + emptyStateCount) < calendarStartWeekDay) {
-            calendarDaysList.add(CalendarDayListItem.CalendarEmptyWeekDay())
+            calendarDaysList.add(CalendarDayListItem.CalendarEmptyWeekDayItem())
             emptyStateCount++
             addEmptyDatesRecursive(calendar)
         }
     }
 
     private fun addFinalEmptyDatesRecursive(calendar: Calendar) {
-        val lastPosition = calendarDaysList.filter { it.viewType != CalendarMonthViewType.CALENDAR_MONTH_NAME }.lastIndex
+        val lastPosition = calendarDaysList.filter { it.viewType != CalendarViewType.CALENDAR_MONTH_NAME }.lastIndex
         if(lastPosition % 7 != 0){
-            calendarDaysList.add(CalendarDayListItem.CalendarEmptyWeekDay())
+            calendarDaysList.add(CalendarDayListItem.CalendarEmptyWeekDayItem())
             emptyStateCount++
             addFinalEmptyDatesRecursive(calendar)
         } else {
-            calendarDaysList.add(CalendarDayListItem.CalendarEmptyWeekDay())
+            calendarDaysList.add(CalendarDayListItem.CalendarEmptyWeekDayItem())
             emptyStateCount++
         }
     }
@@ -102,21 +106,21 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            CalendarMonthViewType.CALENDAR_WEEK_DAY.ordinal -> CalendarWeekDayViewHolder(
+            CalendarViewType.CALENDAR_WEEK_DAY.ordinal -> CalendarWeekDayViewHolder(
                 CalendarDayItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            CalendarMonthViewType.CALENDAR_MONTH_NAME.ordinal -> CalendarMonthNameViewHolder(
+            CalendarViewType.CALENDAR_MONTH_NAME.ordinal -> CalendarMonthNameViewHolder(
                 CalendarMonthItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            CalendarMonthViewType.CALENDAR_EMPTY_DAY.ordinal -> EmptyStateViewHolder(
+            CalendarViewType.CALENDAR_EMPTY_DAY.ordinal -> EmptyStateViewHolder(
                 CalendarDayItemEmptyBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -148,7 +152,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     inner class CalendarMonthNameViewHolder(private val binding: CalendarMonthItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.apply {
             itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_color))
-            (day as? CalendarDayListItem.CalendarMonthName)?.let { weekDay ->
+            (day as? CalendarDayListItem.CalendarMonthHeaderItem)?.let { weekDay ->
                 if(position != 0){
                     (tvMonthName.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
                         this.topMargin = 40
@@ -167,7 +171,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.apply {
             itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.white_app))
-            (day as? CalendarDayListItem.CalendarWeekDay)?.let { weekDay ->
+            (day as? CalendarDayListItem.CalendarWeekDayItem)?.let { weekDay ->
                 tvCalendarDayItem.apply {
                     text = weekDay.name
                     setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_week_day_color))
@@ -181,20 +185,21 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.tvCalendarDayItem.apply {
             itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.white_app))
-            (day as? CalendarDayListItem.CalendarDay)?.let { calendarDay ->
+            (day as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
                 calendarDay.dayInfo.day?.let {
                     text = it.toString()
                 }
                 setDateStyleBySelection(day)
                 itemView.setOnClickListener {
-                    handleDateSelection(day.dayInfo, position, !day.isSelected)
-                    day.isSelected = !day.isSelected
-                    notifyItemChanged(position)
+                    handleDateSelection(day, !day.isSelected) {
+                        day.isSelected = !day.isSelected
+                        notifyItemChanged(position)
+                    }
                 }
             }
         }
 
-        private fun setDateStyleBySelection(day: CalendarDayListItem.CalendarDay) = binding.tvCalendarDayItem.apply{
+        private fun setDateStyleBySelection(day: CalendarDayListItem.CalendarDayItem) = binding.tvCalendarDayItem.apply{
             when {
                 day.isSelected -> {
                     setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.black))
@@ -207,15 +212,34 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             }
         }
 
-        private fun handleDateSelection(calendarDayInfo: CalendarDayInfo, position: Int, isSelected: Boolean){
-            when(listener.getCalendarSelectionType()){
+        private fun handleDateSelection(
+            day: CalendarDayListItem.CalendarDayItem,
+            isSelected: Boolean,
+            onUpdateCurrentItem: () -> Unit
+        ) {
+            when (listener.getCalendarSelectionType()) {
                 CalendarSelectionTypeEnum.SINGLE -> {
-                    if(isSelected) {
+                    if (isSelected) {
                         unSelectAllItems()
+                        listener.onSelectDate(day.dayInfo)
                     }
+                    onUpdateCurrentItem.invoke()
                 }
                 CalendarSelectionTypeEnum.MULTIPLE -> {
-
+                    listener.getMaxMultiSelectionDates()?.let { maxSelection ->
+                        val selectedDateList = selectedDates.mapNotNull { (it as? CalendarDayListItem.CalendarDayItem)?.dayInfo }
+                        val currentSelectedQuantity = selectedDateList.count()
+                        when {
+                            currentSelectedQuantity < maxSelection || !isSelected -> {
+                                onUpdateCurrentItem()
+                                listener.onSelectDates(selectedDateList)
+                            }
+                            else -> listener.onMaxSelectionReach(currentSelectedQuantity)
+                        }
+                    } ?: run(onUpdateCurrentItem)
+                }
+                CalendarSelectionTypeEnum.RANGE -> {
+                    //TODO: add implementation
                 }
             }
         }
@@ -224,7 +248,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             val currentItemList = currentList.toMutableList()
             currentItemList.mapIndexed { index, calendarDayListItem ->
                 if(calendarDayListItem.isSelected){
-                    (calendarDayListItem as? CalendarDayListItem.CalendarDay)?.let { calendarDay ->
+                    (calendarDayListItem as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
                         currentItemList[index] = calendarDay.copy(isSelected = false)
                     }
                 }
@@ -245,9 +269,9 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             newItem: CalendarDayListItem
         ): Boolean {
             return  when (oldItem) {
-                is CalendarDayListItem.CalendarWeekDay -> (oldItem as? CalendarDayListItem.CalendarWeekDay)?.name == (newItem as? CalendarDayListItem.CalendarWeekDay)?.name
-                is CalendarDayListItem.CalendarDay -> (oldItem as? CalendarDayListItem.CalendarDay)?.dayInfo?.timeInMillis == (newItem as? CalendarDayListItem.CalendarDay)?.dayInfo?.timeInMillis
-                is CalendarDayListItem.CalendarMonthName -> (oldItem as? CalendarDayListItem.CalendarMonthName)?.name == (newItem as? CalendarDayListItem.CalendarMonthName)?.name
+                is CalendarDayListItem.CalendarWeekDayItem -> (oldItem as? CalendarDayListItem.CalendarWeekDayItem)?.name == (newItem as? CalendarDayListItem.CalendarWeekDayItem)?.name
+                is CalendarDayListItem.CalendarDayItem -> (oldItem as? CalendarDayListItem.CalendarDayItem)?.dayInfo?.timeInMillis == (newItem as? CalendarDayListItem.CalendarDayItem)?.dayInfo?.timeInMillis
+                is CalendarDayListItem.CalendarMonthHeaderItem -> (oldItem as? CalendarDayListItem.CalendarMonthHeaderItem)?.name == (newItem as? CalendarDayListItem.CalendarMonthHeaderItem)?.name
                 else -> oldItem == newItem
             }
         }
@@ -257,9 +281,9 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             newItem: CalendarDayListItem
         ): Boolean {
             return when (oldItem) {
-                is CalendarDayListItem.CalendarWeekDay -> (oldItem as? CalendarDayListItem.CalendarWeekDay) == (newItem as? CalendarDayListItem.CalendarWeekDay)
-                is CalendarDayListItem.CalendarDay -> (oldItem as? CalendarDayListItem.CalendarDay) == (newItem as? CalendarDayListItem.CalendarDay)
-                is CalendarDayListItem.CalendarMonthName -> (oldItem as? CalendarDayListItem.CalendarMonthName) == (newItem as? CalendarDayListItem.CalendarMonthName)
+                is CalendarDayListItem.CalendarWeekDayItem -> (oldItem as? CalendarDayListItem.CalendarWeekDayItem) == (newItem as? CalendarDayListItem.CalendarWeekDayItem)
+                is CalendarDayListItem.CalendarDayItem -> (oldItem as? CalendarDayListItem.CalendarDayItem) == (newItem as? CalendarDayListItem.CalendarDayItem)
+                is CalendarDayListItem.CalendarMonthHeaderItem -> (oldItem as? CalendarDayListItem.CalendarMonthHeaderItem) == (newItem as? CalendarDayListItem.CalendarMonthHeaderItem)
                 else -> oldItem == newItem
             } && (oldItem.isSelected == newItem.isSelected)
         }

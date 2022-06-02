@@ -11,9 +11,12 @@
         android:id="@+id/custom_calendar_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxMultiSelectionDates="10"
+        app:selectionType="Single" />
 
     <Button
         android:id="@+id/button_first"
