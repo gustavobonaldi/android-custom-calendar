@@ -13,8 +13,9 @@ import br.com.bonaldi.customcalendar.databinding.CalendarDayItemBinding
 import br.com.bonaldi.customcalendar.databinding.CalendarDayItemEmptyBinding
 import br.com.bonaldi.customcalendar.databinding.CalendarMonthItemBinding
 import br.com.bonaldi.customcalendar.databinding.CalendarWeekDayItemBinding
-import br.com.bonaldi.customcalendar.helpers.DateHelper.calendarToCalendarDayInfo
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getFirstDateOfMonth
+import br.com.bonaldi.customcalendar.helpers.DateHelper.toCalendar
+import br.com.bonaldi.customcalendar.helpers.DateHelper.toCalendarDayInfo
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
@@ -42,19 +43,26 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     private val selectedDate: CalendarDayListItem?
         get() = currentList.firstOrNull { it.isSelected }
 
-    fun setMonthItem(monthList: List<Int>) {
-        monthList.map {
-            setupMonth(it)
+    fun refreshCalendar() {
+        val minDate = listener.getMinDate().toCalendar()
+        val maxDate = listener.getMaxDate()?.toCalendar() ?: minDate.toCalendarDayInfo().toCalendar().apply {
+            add(Calendar.YEAR, 1)
         }
+        val currentDateToAdd = minDate
+        while (currentDateToAdd.get(Calendar.MONTH) != maxDate.get(Calendar.MONTH) || currentDateToAdd.get(Calendar.YEAR) != maxDate.get(Calendar.YEAR)){
+            setupMonth(currentDateToAdd.get(Calendar.MONTH), currentDateToAdd.get(Calendar.YEAR))
+            currentDateToAdd.add(Calendar.MONTH, 1)
+        }
+        setupMonth(currentDateToAdd.get(Calendar.MONTH), currentDateToAdd.get(Calendar.YEAR))
         submitList(calendarDaysList){
             calendarDaysList = currentList
         }
     }
 
-    private fun setupMonth(month: Int){
-        val calendar = getFirstDateOfMonth(month)
+    private fun setupMonth(month: Int, year: Int){
+        val calendar = getFirstDateOfMonth(month, year)
         emptyStateCount = 0
-        calendarDaysList.add(CalendarDayListItem.CalendarMonthHeaderItem(getCurrentMonthName(month)))
+        calendarDaysList.add(CalendarDayListItem.CalendarMonthHeaderItem(getCurrentMonthName(month, year)))
         mapDaysFromMonthAndAdd(calendar)
     }
 
@@ -66,7 +74,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         for (i in currentDate..maxMonthDate) {
             calendarDaysList.add(
                 CalendarDayListItem.CalendarDayItem(
-                    calendarToCalendarDayInfo(calendar),
+                    calendar.toCalendarDayInfo(),
                     isSelected = false
                 )
             )
@@ -75,8 +83,9 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         addFinalEmptyDatesRecursive(calendar)
     }
 
-    private fun getCurrentMonthName(month: Int): String{
+    private fun getCurrentMonthName(month: Int, year: Int): String{
         val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
         return SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(calendar.time)
     }

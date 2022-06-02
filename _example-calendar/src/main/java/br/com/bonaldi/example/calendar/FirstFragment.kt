@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
+import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
 import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
 import br.com.bonaldi.example.calendar.databinding.FragmentFirstBinding
@@ -34,7 +35,6 @@ class FirstFragment : Fragment() {
         }
 
         binding.customCalendarItem.apply {
-            setMinDate(getTodayDate())
             setOnCalendarChangedListener(object : OnCalendarChangedListener {
                 override fun onSelectDates(list: List<CalendarDayInfo>) {
                     //TODO("Not yet implemented")
@@ -52,6 +52,12 @@ class FirstFragment : Fragment() {
                     ).show()
                 }
             })
+            setMinDate(getTodayDate())
+            getTodayDate().apply {
+                month = month.orZero() + 2
+                setMaxDate(this)
+            }
+            refreshCalendar()
         }
     }
 }

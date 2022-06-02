@@ -6,17 +6,18 @@ import java.util.*
 
 object DateHelper {
 
-    fun calendarToCalendarDayInfo(calendar: Calendar): CalendarDayInfo{
+    fun Calendar.toCalendarDayInfo(): CalendarDayInfo{
         return CalendarDayInfo(
-            day = calendar.get(Calendar.DAY_OF_MONTH),
-            month = calendar.get(Calendar.MONTH),
-            year = calendar.get(Calendar.YEAR),
-            timeInMillis = calendar.time.time
+            day = get(Calendar.DAY_OF_MONTH),
+            month = get(Calendar.MONTH),
+            year = get(Calendar.YEAR),
+            timeInMillis = time.time
         )
     }
 
-    fun getFirstDateOfMonth(month: Int): Calendar {
+    fun getFirstDateOfMonth(month: Int, year: Int): Calendar {
         val calendar = Calendar.getInstance().apply {
+            set(Calendar.YEAR, year)
             set(Calendar.MONTH, month)
             set(Calendar.DAY_OF_MONTH, 1)
             set(Calendar.HOUR_OF_DAY, 0)

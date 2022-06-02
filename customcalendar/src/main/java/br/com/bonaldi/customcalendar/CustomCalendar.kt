@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.databinding.CustomCalendarLayoutBinding
-import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
 import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
@@ -93,33 +92,18 @@ class CustomCalendar : ConstraintLayout {
 
     fun setMinDate(calendarDay: CalendarDayInfo){
         params.dateParams.minDate = calendarDay
-        calendarAdapter.setMonthItem(listOf(1, 2, 3, 4, 5, 6))
-        getCalendarAllowedDates()
     }
 
     fun setMaxDate(calendarDay: CalendarDayInfo){
         params.dateParams.maxDate = calendarDay
-        getCalendarAllowedDates()
+    }
+
+    fun refreshCalendar(){
+        calendarAdapter.refreshCalendar()
     }
 
     fun setOnCalendarChangedListener(onCalendarChangedListener: OnCalendarChangedListener){
         this.onCalendarChangedListener = onCalendarChangedListener
-    }
-
-    private fun getCalendarAllowedDates(){
-        params.dateParams.minDate.let { minDate ->
-            getMaxDate().let { maxDate ->
-
-            }
-        }
-    }
-
-    private fun getMaxDate(): CalendarDayInfo {
-        return params.dateParams.maxDate ?: getTodayDate().apply {
-            year?.let {
-                year = it + 1
-            }
-        }
     }
 
     private fun setupView(){
@@ -175,6 +159,14 @@ class CustomCalendar : ConstraintLayout {
 
         override fun getCalendarParams(): CalendarParams {
             return this@CustomCalendar.params
+        }
+
+        override fun getMaxDate(): CalendarDayInfo? {
+            return this@CustomCalendar.params.dateParams.maxDate
+        }
+
+        override fun getMinDate(): CalendarDayInfo {
+            return this@CustomCalendar.params.dateParams.minDate
         }
     }
 }
