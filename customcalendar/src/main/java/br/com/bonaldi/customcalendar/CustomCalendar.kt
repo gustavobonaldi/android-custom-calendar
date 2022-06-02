@@ -31,6 +31,8 @@ class CustomCalendar : ConstraintLayout {
     private var minDate: CalendarDayInfo = getTodayDate()
     private var maxDate: CalendarDayInfo? = null
     private var currentDate: CalendarDayInfo? = null
+    private var selectionType: CalendarSelectionTypeEnum = CalendarSelectionTypeEnum.SINGLE
+
 
     private val binding = CustomCalendarLayoutBinding.inflate(
         LayoutInflater.from(context),
@@ -109,7 +111,7 @@ class CustomCalendar : ConstraintLayout {
     }
 
     private fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
-        calendarAdapter.selectionType = type
+        selectionType = type
     }
 
     private val calendarListener = object: CalendarAdapterListener {
@@ -119,6 +121,10 @@ class CustomCalendar : ConstraintLayout {
 
         override fun onSelectDate(date: CalendarDayInfo) {
             this@CustomCalendar.selectedDate = date
+        }
+
+        override fun getCalendarSelectionType(): CalendarSelectionTypeEnum {
+            return selectionType
         }
     }
 }

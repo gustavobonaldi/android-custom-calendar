@@ -15,6 +15,7 @@ import br.com.bonaldi.customcalendar.helpers.DateHelper.calendarToCalendarDayInf
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getFirstDateOfMonth
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
+import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.day.CalendarMonthViewType
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
@@ -31,15 +32,16 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         CalendarDayListItem.CalendarWeekDay("S"),
         CalendarDayListItem.CalendarWeekDay("S"),
     )
-    private val calendarDaysList = mutableListOf<CalendarDayListItem>()
+    private var calendarDaysList = mutableListOf<CalendarDayListItem>()
     private var emptyStateCount: Int = 0
-    var selectionType: CalendarSelectionTypeEnum? = null
 
     fun setMonthItem(monthList: List<Int>) {
         monthList.map {
             setupMonth(it)
         }
-        submitList(calendarDaysList)
+        submitList(calendarDaysList){
+            calendarDaysList = currentList
+        }
     }
 
     private fun setupMonth(month: Int){
@@ -182,24 +184,52 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             (day as? CalendarDayListItem.CalendarDay)?.let { calendarDay ->
                 calendarDay.dayInfo.day?.let {
                     text = it.toString()
+                }
+                setDateStyleBySelection(day)
+                itemView.setOnClickListener {
+                    handleDateSelection(day.dayInfo, position, !day.isSelected)
+                    day.isSelected = !day.isSelected
+                    notifyItemChanged(position)
+                }
+            }
+        }
+
+        private fun setDateStyleBySelection(day: CalendarDayListItem.CalendarDay) = binding.tvCalendarDayItem.apply{
+            when {
+                day.isSelected -> {
+                    setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.black))
+                    setTextColor(ContextCompat.getColor(itemView.context, R.color.white_app))
+                }
+                else -> {
                     setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_color))
                     setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
                 }
+            }
+        }
 
-                itemView.setOnClickListener {
-                    day.isSelected = !day.isSelected
-                    when {
-                        day.isSelected -> {
-                            setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.black))
-                            setTextColor(ContextCompat.getColor(itemView.context, R.color.white_app))
-                        }
-                        else -> {
-                            setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_color))
-                            setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
-                        }
+        private fun handleDateSelection(calendarDayInfo: CalendarDayInfo, position: Int, isSelected: Boolean){
+            when(listener.getCalendarSelectionType()){
+                CalendarSelectionTypeEnum.SINGLE -> {
+                    if(isSelected) {
+                        unSelectAllItems()
+                    }
+                }
+                CalendarSelectionTypeEnum.MULTIPLE -> {
+
+                }
+            }
+        }
+
+        private fun unSelectAllItems(){
+            val currentItemList = currentList.toMutableList()
+            currentItemList.mapIndexed { index, calendarDayListItem ->
+                if(calendarDayListItem.isSelected){
+                    (calendarDayListItem as? CalendarDayListItem.CalendarDay)?.let { calendarDay ->
+                        currentItemList[index] = calendarDay.copy(isSelected = false)
                     }
                 }
             }
+            submitList(currentItemList.toList())
         }
     }
 
@@ -214,9 +244,10 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             oldItem: CalendarDayListItem,
             newItem: CalendarDayListItem
         ): Boolean {
-            return when (oldItem) {
+            return  when (oldItem) {
                 is CalendarDayListItem.CalendarWeekDay -> (oldItem as? CalendarDayListItem.CalendarWeekDay)?.name == (newItem as? CalendarDayListItem.CalendarWeekDay)?.name
-                is CalendarDayListItem.CalendarDay -> (oldItem as? CalendarDayListItem.CalendarDay)?.dayInfo?.timeInMillis == (newItem as? CalendarDayListItem.CalendarDay)?.dayInfo?.timeInMillis && (oldItem as? CalendarDayListItem.CalendarDay)?.isSelected == (newItem as? CalendarDayListItem.CalendarDay)?.isSelected
+                is CalendarDayListItem.CalendarDay -> (oldItem as? CalendarDayListItem.CalendarDay)?.dayInfo?.timeInMillis == (newItem as? CalendarDayListItem.CalendarDay)?.dayInfo?.timeInMillis
+                is CalendarDayListItem.CalendarMonthName -> (oldItem as? CalendarDayListItem.CalendarMonthName)?.name == (newItem as? CalendarDayListItem.CalendarMonthName)?.name
                 else -> oldItem == newItem
             }
         }
@@ -228,8 +259,9 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             return when (oldItem) {
                 is CalendarDayListItem.CalendarWeekDay -> (oldItem as? CalendarDayListItem.CalendarWeekDay) == (newItem as? CalendarDayListItem.CalendarWeekDay)
                 is CalendarDayListItem.CalendarDay -> (oldItem as? CalendarDayListItem.CalendarDay) == (newItem as? CalendarDayListItem.CalendarDay)
+                is CalendarDayListItem.CalendarMonthName -> (oldItem as? CalendarDayListItem.CalendarMonthName) == (newItem as? CalendarDayListItem.CalendarMonthName)
                 else -> oldItem == newItem
-            }
+            } && (oldItem.isSelected == newItem.isSelected)
         }
     }
 }
