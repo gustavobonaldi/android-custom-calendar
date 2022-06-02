@@ -1,30 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_month_name"
+    style="@style/Text_SubHeading"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
-
-    <TextView
-        android:id="@+id/tv_month_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Janeiro" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_calendar_month"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_month_name"
-        app:spanCount="7"
-        tools:listitem="@layout/calendar_day_item" />
-</merge>
+    android:background="@color/calendar_day_color"
+    android:paddingVertical="20dp"
+    android:textColor="@color/white_app"
+    tools:text="Janeiro - 2022" />

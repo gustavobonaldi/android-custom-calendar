@@ -2,7 +2,10 @@
 <resources>
     <color name="primaryColor">#4C535D</color>
     <color name="secondaryColor">#E0E2E7</color>
-    <color name="calendar_day_color">@color/primaryColor</color>
     <color name="black">#000000</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white_app">#fff</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="calendar_month_color">#3B4149</color>
+    <color name="calendar_week_day_color">#4C535D</color>
+    <color name="calendar_day_color">#8793A3</color>
 </resources>
