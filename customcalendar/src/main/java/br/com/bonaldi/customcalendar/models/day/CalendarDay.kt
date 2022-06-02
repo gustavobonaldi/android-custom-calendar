@@ -4,9 +4,14 @@ package br.com.bonaldi.customcalendar.models.day
 sealed class CalendarDayListItem {
     abstract val viewType: CalendarMonthViewType
 
+    data class CalendarMonthName(
+        val name: String,
+        override val viewType: CalendarMonthViewType = CalendarMonthViewType.CALENDAR_MONTH_NAME
+    ): CalendarDayListItem()
+
     data class CalendarDay(
         val dayInfo: CalendarDayInfo,
-        val isSelected: Boolean = false,
+        var isSelected: Boolean = false,
         override val viewType: CalendarMonthViewType = CalendarMonthViewType.CALENDAR_DAY
     ) : CalendarDayListItem()
 
@@ -21,6 +26,7 @@ sealed class CalendarDayListItem {
 }
 
 enum class CalendarMonthViewType {
+    CALENDAR_MONTH_NAME,
     CALENDAR_DAY,
     CALENDAR_WEEK_DAY,
     CALENDAR_EMPTY_DAY

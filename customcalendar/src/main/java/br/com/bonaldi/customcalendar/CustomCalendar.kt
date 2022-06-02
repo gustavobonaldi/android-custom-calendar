@@ -5,14 +5,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import br.com.bonaldi.customcalendar.adapters.MonthAdapter
-import br.com.bonaldi.customcalendar.databinding.CalendarMonthItemBinding
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.databinding.CustomCalendarLayoutBinding
 import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
+import br.com.bonaldi.customcalendar.models.day.CalendarMonthViewType
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import br.com.bonaldi.customcalendar.models.enums.CalendarViewTypeEnum
-import java.text.SimpleDateFormat
-import java.util.*
 
 class CustomCalendar : ConstraintLayout {
     constructor(context: Context) : this(context, null, 0)
@@ -25,19 +24,19 @@ class CustomCalendar : ConstraintLayout {
         setAttributes(attrs)
     }
 
-    private val selectedDate: CalendarDayInfo? = null
-    private val selectedDates: CalendarDayInfo? = null
-    private val minDate: CalendarDayInfo? = null
-    private val maxDate: CalendarDayInfo? = null
-    private val currentDate: CalendarDayInfo? = null
+    private var selectedDate: CalendarDayInfo? = null
+    private var selectedDates: CalendarDayInfo? = null
+    private var minDate: CalendarDayInfo? = null
+    private var maxDate: CalendarDayInfo? = null
+    private var currentDate: CalendarDayInfo? = null
 
-    private val binding = CalendarMonthItemBinding.inflate(
+    private val binding = CustomCalendarLayoutBinding.inflate(
         LayoutInflater.from(context),
         this
     )
 
-    private val monthAdapter: MonthAdapter by lazy {
-        MonthAdapter()
+    private val calendarAdapter: CalendarAdapter by lazy {
+        CalendarAdapter()
     }
 
     private fun setAttributes(attrs: AttributeSet?){
@@ -60,21 +59,28 @@ class CustomCalendar : ConstraintLayout {
         }
     }
 
-    fun setMinDate(month: Int){
-        monthAdapter.setMonthItem(2)
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.MONTH, month)
-        binding.tvMonthName.text = SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(calendar.time)
+    fun setMinDate(calendarDay: CalendarDayInfo){
+        this.minDate = calendarDay
+        calendarAdapter.setMonthItem(listOf(1, 2, 3, 4, 5, 6))
     }
 
-    fun setMaxMonth(month: Int){
+    fun setMaxDate(calendarDay: CalendarDayInfo){
 
     }
 
     private fun setupView(){
         binding.rvCalendarMonth.apply {
-            adapter = monthAdapter
-            layoutManager = GridLayoutManager(context, 7)
+            adapter = calendarAdapter
+            val gridLayoutManager = GridLayoutManager(context, 7)
+            gridLayoutManager.spanSizeLookup = object: SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when(calendarAdapter.currentList.getOrNull(position)?.viewType){
+                        CalendarMonthViewType.CALENDAR_MONTH_NAME -> 7
+                        else -> 1
+                    }
+                }
+            }
+            layoutManager = gridLayoutManager
         }
     }
 
