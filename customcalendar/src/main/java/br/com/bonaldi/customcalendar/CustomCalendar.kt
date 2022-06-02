@@ -57,12 +57,31 @@ class CustomCalendar : ConstraintLayout {
                 setMaxMultiSelectionDates(it)
             }
 
-            typedArray.getColorStateList(R.styleable.CustomCalendar_monthTextColor)?.let { monthTextColor ->
-
-            }
-
-            typedArray.getColor(R.styleable.CustomCalendar_monthBackgroundColor, 0).takeIf { it != 0 }?.let {
-
+            params.colorParams.apply {
+                typedArray.getColorStateList(R.styleable.CustomCalendar_weekDayTextColor)?.let { weekDayTextColor ->
+                    this.weekDayTextColor = weekDayTextColor
+                }
+                typedArray.getColor(R.styleable.CustomCalendar_weekDayBackgroundColor, 0).takeIf { it != 0 }?.let { weekDayBackgroundColor ->
+                    this.weekDayBackgroundColor = weekDayBackgroundColor
+                }
+                typedArray.getColorStateList(R.styleable.CustomCalendar_dayTextColor)?.let { dayTextColor ->
+                    this.dayTextColor = dayTextColor
+                }
+                typedArray.getColor(R.styleable.CustomCalendar_dayBackgroundColor, 0).takeIf { it != 0 }?.let { dayBackgroundColor ->
+                    this.dayBackgroundColor = dayBackgroundColor
+                }
+                typedArray.getColorStateList(R.styleable.CustomCalendar_selectedDayTextColor)?.let { selectedDayTextColor ->
+                    this.selectedDayTextColor = selectedDayTextColor
+                }
+                typedArray.getColor(R.styleable.CustomCalendar_selectedDayBackgroundColor, 0).takeIf { it != 0 }?.let { selectedDayBackgroundColor ->
+                    this.selectedDayBackgroundColor = selectedDayBackgroundColor
+                }
+                typedArray.getColorStateList(R.styleable.CustomCalendar_monthTextColor)?.let { monthTextColor ->
+                    this.monthTextColor = monthTextColor
+                }
+                typedArray.getColor(R.styleable.CustomCalendar_monthBackgroundColor, 0).takeIf { it != 0 }?.let { monthBackgroundColor ->
+                    this.monthBackgroundColor = monthBackgroundColor
+                }
             }
 
             setCalendarViewType(calendarViewType)
@@ -152,6 +171,10 @@ class CustomCalendar : ConstraintLayout {
 
         override fun onMaxSelectionReach(selectedQuantity: Int) {
             this@CustomCalendar.onCalendarChangedListener?.onMaxSelectionReach(selectedQuantity)
+        }
+
+        override fun getCalendarParams(): CalendarParams {
+            return this@CustomCalendar.params
         }
     }
 }

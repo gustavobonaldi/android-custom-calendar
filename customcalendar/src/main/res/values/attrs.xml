@@ -16,6 +16,8 @@
         <attr name="weekDayTextColor" format="color"/>
         <attr name="dayBackgroundColor" format="color"/>
         <attr name="dayTextColor" format="color"/>
+        <attr name="selectedDayBackgroundColor" format="color"/>
+        <attr name="selectedDayTextColor" format="color"/>
         <attr name="monthBackgroundColor" format="color"/>
         <attr name="monthTextColor" format="color"/>
     </declare-styleable>

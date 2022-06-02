@@ -1,5 +1,7 @@
 package br.com.bonaldi.customcalendar
 
+import android.content.res.ColorStateList
+import androidx.annotation.ColorInt
 import br.com.bonaldi.customcalendar.helpers.DateHelper
 import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
@@ -8,7 +10,8 @@ import br.com.bonaldi.customcalendar.models.enums.CalendarViewTypeEnum
 data class CalendarParams(
     var typeParams: TypeParams = TypeParams(),
     var dateParams: DateParams = DateParams(),
-    var preConfigParam: PreConfigParams = PreConfigParams()
+    var preConfigParam: PreConfigParams = PreConfigParams(),
+    var colorParams: ColorParams = ColorParams()
 )
 
 data class TypeParams(
@@ -29,10 +32,12 @@ data class PreConfigParams(
 )
 
 data class ColorParams(
-    val weekDayBackgroundColor: Int? = null,
-    val weekDayTextColor: Int? = null,
-    val dayBackgroundColor: Int? = null,
-    val dayTextColor: Int? = null,
-    val monthBackgroundColor: Int? = null,
-    val monthTextColor: Int? = null
+    @ColorInt var weekDayBackgroundColor: Int? = null,
+    var weekDayTextColor: ColorStateList? = null,
+    @ColorInt var monthBackgroundColor: Int? = null,
+    var monthTextColor: ColorStateList? = null,
+    @ColorInt var dayBackgroundColor: Int? = null,
+    var dayTextColor: ColorStateList? = null,
+    @ColorInt var selectedDayBackgroundColor: Int? = null,
+    var selectedDayTextColor: ColorStateList? = null,
 )
