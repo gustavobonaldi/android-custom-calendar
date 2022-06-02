@@ -40,7 +40,7 @@ class FirstFragment : Fragment() {
                     //TODO("Not yet implemented")
                 }
 
-                override fun onSelectDate(date: CalendarDay) {
+                override fun onSelectDate(date: CalendarDay?) {
                     //TODO("Not yet implemented")
                 }
 
