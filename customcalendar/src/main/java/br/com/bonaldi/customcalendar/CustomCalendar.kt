@@ -148,7 +148,7 @@ class CustomCalendar : ConstraintLayout {
             onCalendarChangedListener?.onSelectDates(list)
         }
 
-        override fun onSelectDate(date: CalendarDayInfo) {
+        override fun onSelectDate(date: CalendarDayInfo?) {
             this@CustomCalendar.params.preConfigParam.selectedDate = date
             this@CustomCalendar.onCalendarChangedListener?.onSelectDate(date)
         }

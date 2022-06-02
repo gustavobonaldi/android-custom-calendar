@@ -308,9 +308,12 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         ) {
             when (listener.getCalendarSelectionType()) {
                 CalendarSelectionTypeEnum.SINGLE -> {
-                    if (isSelected) {
-                        unSelectAllItems()
-                        listener.onSelectDate(day.dayInfo)
+                    when {
+                        isSelected -> {
+                            unSelectAllItems()
+                            listener.onSelectDate(day.dayInfo)
+                        }
+                        else -> listener.onSelectDate(null)
                     }
                     onUpdateCurrentItem.invoke()
                 }
