@@ -14,12 +14,14 @@ import br.com.bonaldi.customcalendar.databinding.CalendarMonthItemBinding
 import br.com.bonaldi.customcalendar.helpers.DateHelper.calendarToCalendarDayInfo
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getFirstDateOfMonth
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
+import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.day.CalendarMonthViewType
+import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarAdapter : ListAdapter<CalendarDayListItem, RecyclerView.ViewHolder>(MonthAdapterDiffer) {
+class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapter<CalendarDayListItem, RecyclerView.ViewHolder>(MonthAdapterDiffer) {
     private val weekDaysList = mutableListOf<CalendarDayListItem>(
         CalendarDayListItem.CalendarWeekDay("D"),
         CalendarDayListItem.CalendarWeekDay("S"),
@@ -31,6 +33,7 @@ class CalendarAdapter : ListAdapter<CalendarDayListItem, RecyclerView.ViewHolder
     )
     private val calendarDaysList = mutableListOf<CalendarDayListItem>()
     private var emptyStateCount: Int = 0
+    var selectionType: CalendarSelectionTypeEnum? = null
 
     fun setMonthItem(monthList: List<Int>) {
         monthList.map {

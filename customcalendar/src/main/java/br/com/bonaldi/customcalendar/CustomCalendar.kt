@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.databinding.CustomCalendarLayoutBinding
+import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
+import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
 import br.com.bonaldi.customcalendar.models.day.CalendarMonthViewType
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
@@ -25,8 +27,8 @@ class CustomCalendar : ConstraintLayout {
     }
 
     private var selectedDate: CalendarDayInfo? = null
-    private var selectedDates: CalendarDayInfo? = null
-    private var minDate: CalendarDayInfo? = null
+    private var selectedDates: MutableList<CalendarDayInfo> = mutableListOf()
+    private var minDate: CalendarDayInfo = getTodayDate()
     private var maxDate: CalendarDayInfo? = null
     private var currentDate: CalendarDayInfo? = null
 
@@ -36,7 +38,7 @@ class CustomCalendar : ConstraintLayout {
     )
 
     private val calendarAdapter: CalendarAdapter by lazy {
-        CalendarAdapter()
+        CalendarAdapter(calendarListener)
     }
 
     private fun setAttributes(attrs: AttributeSet?){
@@ -62,10 +64,28 @@ class CustomCalendar : ConstraintLayout {
     fun setMinDate(calendarDay: CalendarDayInfo){
         this.minDate = calendarDay
         calendarAdapter.setMonthItem(listOf(1, 2, 3, 4, 5, 6))
+        getCalendarAllowedDates()
     }
 
     fun setMaxDate(calendarDay: CalendarDayInfo){
+        this.maxDate = calendarDay
+        getCalendarAllowedDates()
+    }
 
+    private fun getCalendarAllowedDates(){
+        minDate.let { minDate ->
+            getMaxDate().let { maxDate ->
+
+            }
+        }
+    }
+
+    private fun getMaxDate(): CalendarDayInfo {
+        return maxDate ?: getTodayDate().apply {
+            year?.let {
+                year = it + 1
+            }
+        }
     }
 
     private fun setupView(){
@@ -89,6 +109,16 @@ class CustomCalendar : ConstraintLayout {
     }
 
     private fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
+        calendarAdapter.selectionType = type
+    }
 
+    private val calendarListener = object: CalendarAdapterListener {
+        override fun onSelectDates(list: List<CalendarDayInfo>) {
+            this@CustomCalendar.selectedDates = list.toMutableList()
+        }
+
+        override fun onSelectDate(date: CalendarDayInfo) {
+            this@CustomCalendar.selectedDate = date
+        }
     }
 }
