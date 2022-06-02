@@ -12,7 +12,7 @@ import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
 import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
-import br.com.bonaldi.customcalendar.models.day.CalendarMonthViewType
+import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import br.com.bonaldi.customcalendar.models.enums.CalendarViewTypeEnum
 
@@ -26,17 +26,7 @@ class CustomCalendar : ConstraintLayout {
     ){
         setAttributes(attrs)
     }
-
-    private var selectionType: CalendarSelectionTypeEnum = CalendarSelectionTypeEnum.SINGLE
-    private var calendarViewType: CalendarViewTypeEnum = CalendarViewTypeEnum.LIST
-    private var selectedDate: CalendarDayInfo? = null
-    private var selectedDates: MutableList<CalendarDayInfo> = mutableListOf()
-    private var minDate: CalendarDayInfo = getTodayDate()
-    private var maxDate: CalendarDayInfo? = null
-    private var currentDate: CalendarDayInfo? = null
-    private var maxMultiSelectionDates: Int? = null
-    private var onCalendarChangedListener: OnCalendarChangedListener? = null
-
+    
 
     private val binding = CustomCalendarLayoutBinding.inflate(
         LayoutInflater.from(context),
@@ -46,6 +36,9 @@ class CustomCalendar : ConstraintLayout {
     private val calendarAdapter: CalendarAdapter by lazy {
         CalendarAdapter(calendarListener)
     }
+
+    private var params = CalendarParams()
+    private var onCalendarChangedListener: OnCalendarChangedListener? = null
 
     private fun setAttributes(attrs: AttributeSet?){
         attrs?.let { attributeSet ->
@@ -64,6 +57,14 @@ class CustomCalendar : ConstraintLayout {
                 setMaxMultiSelectionDates(it)
             }
 
+            typedArray.getColorStateList(R.styleable.CustomCalendar_monthTextColor)?.let { monthTextColor ->
+
+            }
+
+            typedArray.getColor(R.styleable.CustomCalendar_monthBackgroundColor, 0).takeIf { it != 0 }?.let {
+
+            }
+
             setCalendarViewType(calendarViewType)
             setCalendarSelectionType(selectionType)
             setupView()
@@ -72,13 +73,13 @@ class CustomCalendar : ConstraintLayout {
     }
 
     fun setMinDate(calendarDay: CalendarDayInfo){
-        this.minDate = calendarDay
+        params.dateParams.minDate = calendarDay
         calendarAdapter.setMonthItem(listOf(1, 2, 3, 4, 5, 6))
         getCalendarAllowedDates()
     }
 
     fun setMaxDate(calendarDay: CalendarDayInfo){
-        this.maxDate = calendarDay
+        params.dateParams.maxDate = calendarDay
         getCalendarAllowedDates()
     }
 
@@ -87,7 +88,7 @@ class CustomCalendar : ConstraintLayout {
     }
 
     private fun getCalendarAllowedDates(){
-        minDate.let { minDate ->
+        params.dateParams.minDate.let { minDate ->
             getMaxDate().let { maxDate ->
 
             }
@@ -95,7 +96,7 @@ class CustomCalendar : ConstraintLayout {
     }
 
     private fun getMaxDate(): CalendarDayInfo {
-        return maxDate ?: getTodayDate().apply {
+        return params.dateParams.maxDate ?: getTodayDate().apply {
             year?.let {
                 year = it + 1
             }
@@ -109,7 +110,7 @@ class CustomCalendar : ConstraintLayout {
             gridLayoutManager.spanSizeLookup = object: SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return when(calendarAdapter.currentList.getOrNull(position)?.viewType){
-                        CalendarMonthViewType.CALENDAR_MONTH_NAME -> 7
+                        CalendarDayListItem.CalendarViewType.CALENDAR_MONTH_NAME -> 7
                         else -> 1
                     }
                 }
@@ -123,34 +124,34 @@ class CustomCalendar : ConstraintLayout {
     }
 
     private fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
-        this.selectionType = type
+        params.typeParams.selectionType = type
     }
 
     private fun setMaxMultiSelectionDates(max: Int){
-        this.maxMultiSelectionDates = max
+        params.typeParams.maxMultiSelectionDates = max
     }
 
     private val calendarListener = object: CalendarAdapterListener {
         override fun getCalendarSelectionType(): CalendarSelectionTypeEnum {
-            return this@CustomCalendar.selectionType
+            return this@CustomCalendar.params.typeParams.selectionType
         }
 
         override fun getMaxMultiSelectionDates(): Int? {
-            return this@CustomCalendar.maxMultiSelectionDates
+            return this@CustomCalendar.params.typeParams.maxMultiSelectionDates
         }
 
         override fun onSelectDates(list: List<CalendarDayInfo>) {
-            this@CustomCalendar.selectedDates = list.toMutableList()
+            this@CustomCalendar.params.preConfigParam.selectedDates = list.toMutableList()
             onCalendarChangedListener?.onSelectDates(list)
         }
 
         override fun onSelectDate(date: CalendarDayInfo) {
-            this@CustomCalendar.selectedDate = date
-            onCalendarChangedListener?.onSelectDate(date)
+            this@CustomCalendar.params.preConfigParam.selectedDate = date
+            this@CustomCalendar.onCalendarChangedListener?.onSelectDate(date)
         }
 
         override fun onMaxSelectionReach(selectedQuantity: Int) {
-            onCalendarChangedListener?.onMaxSelectionReach(selectedQuantity)
+            this@CustomCalendar.onCalendarChangedListener?.onMaxSelectionReach(selectedQuantity)
         }
     }
 }

@@ -10,6 +10,7 @@ import br.com.bonaldi.customcalendar.R
 import br.com.bonaldi.customcalendar.databinding.CalendarDayItemBinding
 import br.com.bonaldi.customcalendar.databinding.CalendarDayItemEmptyBinding
 import br.com.bonaldi.customcalendar.databinding.CalendarMonthItemBinding
+import br.com.bonaldi.customcalendar.databinding.CalendarWeekDayItemBinding
 import br.com.bonaldi.customcalendar.helpers.DateHelper.calendarToCalendarDayInfo
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getFirstDateOfMonth
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
@@ -107,7 +108,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             CalendarViewType.CALENDAR_WEEK_DAY.ordinal -> CalendarWeekDayViewHolder(
-                CalendarDayItemBinding.inflate(
+                CalendarWeekDayItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -151,7 +152,6 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
 
     inner class CalendarMonthNameViewHolder(private val binding: CalendarMonthItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.apply {
-            itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_color))
             (day as? CalendarDayListItem.CalendarMonthHeaderItem)?.let { weekDay ->
                 if(position != 0){
                     (tvMonthName.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
@@ -167,15 +167,12 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         }
     }
 
-    inner class CalendarWeekDayViewHolder(private val binding: CalendarDayItemBinding) :
+    inner class CalendarWeekDayViewHolder(private val binding: CalendarWeekDayItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.apply {
-            itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.white_app))
             (day as? CalendarDayListItem.CalendarWeekDayItem)?.let { weekDay ->
                 tvCalendarDayItem.apply {
                     text = weekDay.name
-                    setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_week_day_color))
-                    setTextColor(ContextCompat.getColor(itemView.context, R.color.white_app))
                 }
             }
         }
@@ -184,7 +181,6 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     inner class CalendarDayViewHolder(private val binding: CalendarDayItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.tvCalendarDayItem.apply {
-            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.white_app))
             (day as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
                 calendarDay.dayInfo.day?.let {
                     text = it.toString()

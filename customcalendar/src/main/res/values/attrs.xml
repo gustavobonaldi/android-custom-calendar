@@ -12,5 +12,11 @@
             <enum name="Range" value="2"/>
         </attr>
         <attr name="maxMultiSelectionDates" format="integer"/>
+        <attr name="weekDayBackgroundColor" format="color"/>
+        <attr name="weekDayTextColor" format="color"/>
+        <attr name="dayBackgroundColor" format="color"/>
+        <attr name="dayTextColor" format="color"/>
+        <attr name="monthBackgroundColor" format="color"/>
+        <attr name="monthTextColor" format="color"/>
     </declare-styleable>
 </resources>
