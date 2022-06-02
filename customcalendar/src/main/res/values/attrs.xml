@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomCalendar">
+        <attr name="calendarViewType" format="enum">
+            <enum name="single" value="0"/>
+            <enum name="list" value="1"/>
+            <enum name="paged" value="2"/>
+        </attr>
+        <attr name="selectionType" format="enum">
+            <enum name="Single" value="0"/>
+            <enum name="Multiple" value="1"/>
+            <enum name="Range" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>

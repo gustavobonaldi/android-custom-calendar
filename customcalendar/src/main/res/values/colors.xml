@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#4C535D</color>
+    <color name="secondaryColor">#E0E2E7</color>
+    <color name="calendar_day_color">@color/primaryColor</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>
