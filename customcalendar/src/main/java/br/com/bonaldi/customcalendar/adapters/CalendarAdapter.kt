@@ -43,6 +43,9 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     private val selectedDate: CalendarDayListItem?
         get() = currentList.firstOrNull { it.isSelected }
 
+    private var startRangeSelection: Pair<Int, CalendarDayListItem>? = null
+    private var endRangeSelection: Pair<Int, CalendarDayListItem>? = null
+
     fun refreshCalendar() {
         val minDate = listener.getMinDate().toCalendar()
         val maxDate = listener.getMaxDate()?.toCalendar() ?: minDate.toCalendarDayInfo().toCalendar().apply {
@@ -228,9 +231,11 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                 }
                 setStyle(day.isSelected)
                 itemView.setOnClickListener {
-                    handleDateSelection(day, !day.isSelected) {
-                        day.isSelected = !day.isSelected
-                        notifyItemChanged(position)
+                    handleDateSelection(day, !day.isSelected, position) { shouldUpdateItem ->
+                        if(shouldUpdateItem) {
+                            day.isSelected = !day.isSelected
+                            notifyItemChanged(position)
+                        }
                     }
                 }
             }
@@ -288,23 +293,11 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             }
         }
 
-        private fun setDateStyleBySelection(day: CalendarDayListItem.CalendarDayItem) = binding.tvCalendarDayItem.apply{
-            when {
-                day.isSelected -> {
-                    setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.black))
-                    setTextColor(ContextCompat.getColor(itemView.context, R.color.white_app))
-                }
-                else -> {
-                    setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_color))
-                    setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
-                }
-            }
-        }
-
         private fun handleDateSelection(
             day: CalendarDayListItem.CalendarDayItem,
             isSelected: Boolean,
-            onUpdateCurrentItem: () -> Unit
+            position: Int,
+            onUpdateCurrentItem: (shouldUpdateItem: Boolean) -> Unit
         ) {
             when (listener.getCalendarSelectionType()) {
                 CalendarSelectionTypeEnum.SINGLE -> {
@@ -315,7 +308,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                         }
                         else -> listener.onSelectDate(null)
                     }
-                    onUpdateCurrentItem.invoke()
+                    onUpdateCurrentItem.invoke(true)
                 }
                 CalendarSelectionTypeEnum.MULTIPLE -> {
                     listener.getMaxMultiSelectionDates()?.let { maxSelection ->
@@ -323,17 +316,71 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                         val currentSelectedQuantity = selectedDateList.count()
                         when {
                             currentSelectedQuantity < maxSelection || !isSelected -> {
-                                onUpdateCurrentItem()
+                                onUpdateCurrentItem(true)
                                 listener.onSelectDates(selectedDateList)
                             }
                             else -> listener.onMaxSelectionReach(currentSelectedQuantity)
                         }
-                    } ?: run(onUpdateCurrentItem)
+                    } ?: run{onUpdateCurrentItem.invoke(true)}
                 }
                 CalendarSelectionTypeEnum.RANGE -> {
-                    //TODO: add implementation
+                    when {
+                        isSelected -> {
+                            when {
+                                startRangeSelection == null -> {
+                                    unSelectAllItems()
+                                    startRangeSelection = position to day
+                                    endRangeSelection = null
+                                }
+                                startRangeSelection?.first.orZero() > position -> {
+                                    unSelectAllItems()
+                                    startRangeSelection = position to day
+                                    endRangeSelection = null
+                                }
+                                startRangeSelection != null && endRangeSelection != null ->{
+                                    startRangeSelection = null
+                                    endRangeSelection = null
+                                    unSelectAllItems()
+                                }
+                                else -> {
+                                    endRangeSelection = position to day
+                                }
+                            }
+                        }
+                        else -> {
+                            startRangeSelection = null
+                            endRangeSelection = null
+                            unSelectAllItems()
+                        }
+                    }
+                    startRangeSelection?.let { start ->
+                        endRangeSelection?.let { end ->
+                            selectRangePosition(start.first, end.first)
+                        }
+                    }
+                    onUpdateCurrentItem.invoke(startRangeSelection == null || endRangeSelection == null)
                 }
             }
+        }
+
+        private fun selectRangePosition(start: Int, end: Int){
+            val currentItemList = currentList.toMutableList()
+            currentItemList.mapIndexed { index, calendarDayListItem ->
+                when {
+                    calendarDayListItem.isSelected && index < start && index > end -> {
+                        (calendarDayListItem as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
+                            currentItemList[index] = calendarDay.copy(isSelected = false)
+                        }
+                    }
+                    !calendarDayListItem.isSelected && index >= start && index <= end -> {
+                        (calendarDayListItem as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
+                            currentItemList[index] = calendarDay.copy(isSelected = true)
+                        }
+                    }
+                    else ->{}
+                }
+            }
+            submitList(currentItemList.toList())
         }
 
         private fun unSelectAllItems(){

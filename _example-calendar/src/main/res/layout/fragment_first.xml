@@ -22,7 +22,7 @@
         app:monthTextColor="@color/white_app"
         app:selectedDayBackgroundColor="@color/dim_gray"
         app:selectedDayTextColor="@color/white"
-        app:selectionType="Single"
+        app:selectionType="Range"
         app:weekDayBackgroundColor="@color/black"
         app:weekDayTextColor="@color/white" />
 
