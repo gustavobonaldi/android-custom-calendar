@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
 import br.com.bonaldi.example.calendar.databinding.FragmentFirstBinding
 
 /**
@@ -36,7 +37,7 @@ class FirstFragment : Fragment() {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
 
-        binding.customCalendarItem.setMinDate(1)
+        binding.customCalendarItem.setMinDate(getTodayDate())
     }
 
     override fun onDestroyView() {
