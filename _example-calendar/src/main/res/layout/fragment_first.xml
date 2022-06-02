@@ -16,6 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:maxMultiSelectionDates="10"
+        app:monthBackgroundColor="@color/black"
+        app:monthTextColor="@color/white_app"
+        app:dayTextColor="@color/white"
+        app:dayBackgroundColor="@color/calendar_day_color"
+        app:weekDayBackgroundColor="@color/black"
+        app:weekDayTextColor="@color/white"
+        app:selectedDayBackgroundColor="@color/dim_gray"
+        app:selectedDayTextColor="@color/white"
         app:selectionType="Single" />
 
     <Button
