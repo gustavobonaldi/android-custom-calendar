@@ -3,7 +3,7 @@ package br.com.bonaldi.customcalendar
 import android.content.res.ColorStateList
 import androidx.annotation.ColorInt
 import br.com.bonaldi.customcalendar.helpers.DateHelper
-import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
+import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import br.com.bonaldi.customcalendar.models.enums.CalendarViewTypeEnum
 
@@ -21,14 +21,14 @@ data class TypeParams(
 )
 
 data class DateParams(
-    var currentDate: CalendarDayInfo? = null,
-    var minDate: CalendarDayInfo = DateHelper.getTodayDate(),
-    var maxDate: CalendarDayInfo? = null,
+    var currentDate: CalendarDay? = null,
+    var minDate: CalendarDay = DateHelper.getTodayDate(),
+    var maxDate: CalendarDay? = null,
 )
 
 data class PreConfigParams(
-    var selectedDate: CalendarDayInfo? = null,
-    var selectedDates: MutableList<CalendarDayInfo> = mutableListOf(),
+    var selectedDate: CalendarDay? = null,
+    var selectedDates: MutableList<CalendarDay> = mutableListOf(),
 )
 
 data class ColorParams(

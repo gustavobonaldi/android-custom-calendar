@@ -1,13 +1,13 @@
 package br.com.bonaldi.customcalendar.helpers
 
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
-import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
+import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import java.util.*
 
 object DateHelper {
 
-    fun Calendar.toCalendarDayInfo(): CalendarDayInfo{
-        return CalendarDayInfo(
+    fun Calendar.toCalendarDayInfo(): CalendarDay{
+        return CalendarDay(
             day = get(Calendar.DAY_OF_MONTH),
             month = get(Calendar.MONTH),
             year = get(Calendar.YEAR),
@@ -27,9 +27,9 @@ object DateHelper {
         return calendar
     }
 
-    fun getTodayDate(): CalendarDayInfo {
+    fun getTodayDate(): CalendarDay {
         val calendar = Calendar.getInstance()
-        return CalendarDayInfo(
+        return CalendarDay(
             day = calendar.get(Calendar.DAY_OF_MONTH),
             month = calendar.get(Calendar.MONTH),
             year = calendar.get(Calendar.YEAR),
@@ -37,7 +37,7 @@ object DateHelper {
         )
     }
 
-    fun CalendarDayInfo.toCalendar(): Calendar {
+    fun CalendarDay.toCalendar(): Calendar {
         val calendar = Calendar.getInstance()
         calendar.set(this.year.orZero(), this.month.orZero(), this.day.orZero())
         return calendar

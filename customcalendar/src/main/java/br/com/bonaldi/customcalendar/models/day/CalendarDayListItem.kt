@@ -14,7 +14,7 @@ sealed class CalendarDayListItem {
     ): CalendarDayListItem()
 
     data class CalendarDayItem(
-        val dayInfo: CalendarDayInfo,
+        val dayInfo: CalendarDay,
         override var isSelected: Boolean = false,
         override val viewType: CalendarViewType = CalendarViewType.CALENDAR_DAY
     ) : CalendarDayListItem()

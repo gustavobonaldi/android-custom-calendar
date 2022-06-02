@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
 import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
-import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
+import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.example.calendar.databinding.FragmentFirstBinding
 
 /**
@@ -36,11 +36,11 @@ class FirstFragment : Fragment() {
 
         binding.customCalendarItem.apply {
             setOnCalendarChangedListener(object : OnCalendarChangedListener {
-                override fun onSelectDates(list: List<CalendarDayInfo>) {
+                override fun onSelectDates(list: List<CalendarDay>) {
                     //TODO("Not yet implemented")
                 }
 
-                override fun onSelectDate(date: CalendarDayInfo) {
+                override fun onSelectDate(date: CalendarDay) {
                     //TODO("Not yet implemented")
                 }
 

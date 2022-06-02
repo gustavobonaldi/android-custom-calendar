@@ -10,7 +10,7 @@ import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.databinding.CustomCalendarLayoutBinding
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
 import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
-import br.com.bonaldi.customcalendar.models.day.CalendarDayInfo
+import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import br.com.bonaldi.customcalendar.models.enums.CalendarViewTypeEnum
@@ -90,11 +90,11 @@ class CustomCalendar : ConstraintLayout {
         }
     }
 
-    fun setMinDate(calendarDay: CalendarDayInfo){
+    fun setMinDate(calendarDay: CalendarDay){
         params.dateParams.minDate = calendarDay
     }
 
-    fun setMaxDate(calendarDay: CalendarDayInfo){
+    fun setMaxDate(calendarDay: CalendarDay){
         params.dateParams.maxDate = calendarDay
     }
 
@@ -143,12 +143,12 @@ class CustomCalendar : ConstraintLayout {
             return this@CustomCalendar.params.typeParams.maxMultiSelectionDates
         }
 
-        override fun onSelectDates(list: List<CalendarDayInfo>) {
+        override fun onSelectDates(list: List<CalendarDay>) {
             this@CustomCalendar.params.preConfigParam.selectedDates = list.toMutableList()
             onCalendarChangedListener?.onSelectDates(list)
         }
 
-        override fun onSelectDate(date: CalendarDayInfo?) {
+        override fun onSelectDate(date: CalendarDay?) {
             this@CustomCalendar.params.preConfigParam.selectedDate = date
             this@CustomCalendar.onCalendarChangedListener?.onSelectDate(date)
         }
@@ -161,11 +161,11 @@ class CustomCalendar : ConstraintLayout {
             return this@CustomCalendar.params
         }
 
-        override fun getMaxDate(): CalendarDayInfo? {
+        override fun getMaxDate(): CalendarDay? {
             return this@CustomCalendar.params.dateParams.maxDate
         }
 
-        override fun getMinDate(): CalendarDayInfo {
+        override fun getMinDate(): CalendarDay {
             return this@CustomCalendar.params.dateParams.minDate
         }
     }
