@@ -25,7 +25,6 @@ data class DateParams(
     var currentDate: CalendarDay = DateHelper.getTodayDate(),
     var minDate: CalendarDay = DateHelper.getTodayDate(),
     var maxDate: CalendarDay? = null,
-    var maturityDate: CalendarDay? = null
 )
 
 data class PreConfigParams(

@@ -96,10 +96,6 @@ class CustomCalendar : ConstraintLayout {
         params.dateParams.maxDate = calendarDay
     }
 
-    fun setMaturityDate(calendarDay: CalendarDay){
-        params.dateParams.maturityDate = calendarDay
-    }
-
     fun refreshCalendar(){
         setupView()
         calendarAdapter?.refreshCalendar()
