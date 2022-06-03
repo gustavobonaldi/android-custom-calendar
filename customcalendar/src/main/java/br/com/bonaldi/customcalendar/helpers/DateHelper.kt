@@ -11,7 +11,6 @@ object DateHelper {
             day = get(Calendar.DAY_OF_MONTH),
             month = get(Calendar.MONTH),
             year = get(Calendar.YEAR),
-            timeInMillis = time.time
         )
     }
 
@@ -33,7 +32,6 @@ object DateHelper {
             day = calendar.get(Calendar.DAY_OF_MONTH),
             month = calendar.get(Calendar.MONTH),
             year = calendar.get(Calendar.YEAR),
-            timeInMillis = calendar.timeInMillis
         )
     }
 
@@ -41,5 +39,10 @@ object DateHelper {
         val calendar = Calendar.getInstance()
         calendar.set(this.year.orZero(), this.month.orZero(), this.day.orZero())
         return calendar
+    }
+
+    fun CalendarDay.isToday(): Boolean {
+        val calendar = Calendar.getInstance()
+        return (this.year == calendar.get(Calendar.YEAR) && this.month == calendar.get(Calendar.MONTH) && this.day == calendar.get(Calendar.DAY_OF_MONTH))
     }
 }

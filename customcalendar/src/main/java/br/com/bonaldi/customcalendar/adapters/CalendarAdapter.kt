@@ -14,10 +14,12 @@ import br.com.bonaldi.customcalendar.databinding.CalendarDayItemEmptyBinding
 import br.com.bonaldi.customcalendar.databinding.CalendarMonthItemBinding
 import br.com.bonaldi.customcalendar.databinding.CalendarWeekDayItemBinding
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getFirstDateOfMonth
+import br.com.bonaldi.customcalendar.helpers.DateHelper.isToday
 import br.com.bonaldi.customcalendar.helpers.DateHelper.toCalendar
 import br.com.bonaldi.customcalendar.helpers.DateHelper.toCalendarDayInfo
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
+import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem.CalendarViewType
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
@@ -245,7 +247,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                 calendarDay.dayInfo.day?.let {
                     text = it.toString()
                 }
-                setStyle(day.isSelected)
+                setStyle(day.isSelected, calendarDay.dayInfo)
                 itemView.setOnClickListener {
                     handleDateSelection(day, !day.isSelected, position) { shouldUpdateItem ->
                         if(shouldUpdateItem) {
@@ -268,7 +270,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             }
         }
 
-        private fun setStyle(isSelected: Boolean) = binding.tvCalendarDayItem.apply {
+        private fun setStyle(isSelected: Boolean, calendarDay: CalendarDay) = binding.tvCalendarDayItem.apply {
             listener.getCalendarParams().colorParams.apply {
                 when {
                     isSelected -> {
@@ -315,6 +317,14 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                                 )
                             )
                         }
+                    }
+                }
+                when {
+                    calendarDay.isToday() -> {
+                        binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ContextCompat.getDrawable(context, R.drawable.ic_current_date_point))
+                    }
+                    else -> {
+                        binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
                     }
                 }
             }
@@ -449,7 +459,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         ): Boolean {
             return  when (oldItem) {
                 is CalendarDayListItem.CalendarWeekDayItem -> (oldItem as? CalendarDayListItem.CalendarWeekDayItem)?.name == (newItem as? CalendarDayListItem.CalendarWeekDayItem)?.name
-                is CalendarDayListItem.CalendarDayItem -> (oldItem as? CalendarDayListItem.CalendarDayItem)?.dayInfo?.timeInMillis == (newItem as? CalendarDayListItem.CalendarDayItem)?.dayInfo?.timeInMillis
+                is CalendarDayListItem.CalendarDayItem -> (oldItem as? CalendarDayListItem.CalendarDayItem)?.dayInfo == (newItem as? CalendarDayListItem.CalendarDayItem)?.dayInfo
                 is CalendarDayListItem.CalendarMonthHeaderItem -> (oldItem as? CalendarDayListItem.CalendarMonthHeaderItem)?.name == (newItem as? CalendarDayListItem.CalendarMonthHeaderItem)?.name
                 else -> oldItem == newItem
             }

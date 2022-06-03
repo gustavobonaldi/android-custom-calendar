@@ -64,6 +64,10 @@ class CalendarExampleFragment : Fragment() {
                     year = year.orZero() + 1
                     setMaxDate(this)
                 }
+                getTodayDate().apply{
+                    month = month.orZero()+2
+                    setMaturityDate(this)
+                }
                 setCalendarSelectionType(selectionTypeEnum)
                 refreshCalendar()
             }

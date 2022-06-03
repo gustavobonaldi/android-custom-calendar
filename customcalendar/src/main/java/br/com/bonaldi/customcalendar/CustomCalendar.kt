@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.RecyclerView
 import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.databinding.CustomCalendarLayoutBinding
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
@@ -95,6 +96,10 @@ class CustomCalendar : ConstraintLayout {
         params.dateParams.maxDate = calendarDay
     }
 
+    fun setMaturityDate(calendarDay: CalendarDay){
+        params.dateParams.maturityDate = calendarDay
+    }
+
     fun refreshCalendar(){
         setupView()
         calendarAdapter?.refreshCalendar()
@@ -105,7 +110,7 @@ class CustomCalendar : ConstraintLayout {
     }
 
     fun setCalendarViewType(type: CalendarViewTypeEnum){
-
+        //TODO: implement different viewType
     }
 
     fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){

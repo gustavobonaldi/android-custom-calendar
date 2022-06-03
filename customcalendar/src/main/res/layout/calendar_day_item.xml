@@ -7,5 +7,5 @@
     android:layout_height="wrap_content"
     android:background="@color/white_app"
     android:gravity="center"
-    android:paddingVertical="8dp"
+    android:paddingVertical="12dp"
     tools:text="31" />
