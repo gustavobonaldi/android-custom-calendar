@@ -2,6 +2,7 @@
 
 Custom options:
 - SelectionType (Single, Multiple, Range);
+- MinDate, MaxDate, CurrentDate;
 - If selectionType is `Multiple` its possible to set max selection number;
 - Month Name, Week Day, Month Day (TextColor and BackgroundColor);
 
