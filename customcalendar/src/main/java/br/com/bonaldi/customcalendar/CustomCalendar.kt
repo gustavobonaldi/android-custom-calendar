@@ -32,10 +32,7 @@ class CustomCalendar : ConstraintLayout {
         this
     )
 
-    private val calendarAdapter: CalendarAdapter by lazy {
-        CalendarAdapter(calendarListener)
-    }
-
+    private var calendarAdapter: CalendarAdapter? = null
     private var params = CalendarParams()
     private var onCalendarChangedListener: OnCalendarChangedListener? = null
 
@@ -99,20 +96,30 @@ class CustomCalendar : ConstraintLayout {
     }
 
     fun refreshCalendar(){
-        calendarAdapter.refreshCalendar()
+        setupView()
+        calendarAdapter?.refreshCalendar()
     }
 
     fun setOnCalendarChangedListener(onCalendarChangedListener: OnCalendarChangedListener){
         this.onCalendarChangedListener = onCalendarChangedListener
     }
 
+    fun setCalendarViewType(type: CalendarViewTypeEnum){
+
+    }
+
+    fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
+        params.typeParams.selectionType = type
+    }
+
     private fun setupView(){
         binding.rvCalendarMonth.apply {
+            calendarAdapter = CalendarAdapter(listener = calendarListener)
             adapter = calendarAdapter
             val gridLayoutManager = GridLayoutManager(context, 7)
             gridLayoutManager.spanSizeLookup = object: SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return when(calendarAdapter.currentList.getOrNull(position)?.viewType){
+                    return when(calendarAdapter?.currentList?.getOrNull(position)?.viewType){
                         CalendarDayListItem.CalendarViewType.CALENDAR_MONTH_NAME -> 7
                         else -> 1
                     }
@@ -120,14 +127,6 @@ class CustomCalendar : ConstraintLayout {
             }
             layoutManager = gridLayoutManager
         }
-    }
-
-    private fun setCalendarViewType(type: CalendarViewTypeEnum){
-
-    }
-
-    private fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
-        params.typeParams.selectionType = type
     }
 
     private fun setMaxMultiSelectionDates(max: Int){
