@@ -2,11 +2,9 @@ package br.com.bonaldi.customcalendar
 
 import android.content.res.ColorStateList
 import androidx.annotation.ColorInt
-import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.helpers.DateHelper
 import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
-import br.com.bonaldi.customcalendar.models.enums.CalendarViewTypeEnum
 
 data class CalendarParams(
     var typeParams: TypeParams = TypeParams(),
@@ -17,7 +15,6 @@ data class CalendarParams(
 
 data class TypeParams(
     var selectionType: CalendarSelectionTypeEnum = CalendarSelectionTypeEnum.SINGLE,
-    var calendarViewType: CalendarViewTypeEnum = CalendarViewTypeEnum.LIST,
     var maxMultiSelectionDates: Int? = null
 )
 
