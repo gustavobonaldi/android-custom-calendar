@@ -377,10 +377,16 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                                     startRangeSelection = position to day
                                     endRangeSelection = null
                                 }
-                                startRangeSelection != null && endRangeSelection != null ->{
-                                    startRangeSelection = null
-                                    endRangeSelection = null
-                                    unSelectAllItems()
+                                startRangeSelection != null && endRangeSelection != null -> {
+                                    if(position <= startRangeSelection?.first.orZero()) {
+                                        startRangeSelection = null
+                                        endRangeSelection = null
+                                        unSelectAllItems()
+                                    }
+                                    else if(position > startRangeSelection?.first.orZero()){
+                                        endRangeSelection = position to day
+                                    }
+
                                 }
                                 else -> {
                                     endRangeSelection = position to day
