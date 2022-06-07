@@ -386,7 +386,6 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                                     else if(position > startRangeSelection?.first.orZero()){
                                         endRangeSelection = position to day
                                     }
-
                                 }
                                 else -> {
                                     endRangeSelection = position to day
