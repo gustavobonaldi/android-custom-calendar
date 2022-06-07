@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.Customcalendarexample.AppBarOverlay">
@@ -18,7 +19,8 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.Customcalendarexample.PopupOverlay"
             app:titleTextAppearance="@style/Text_SubHeading_2"
-            app:subtitleTextAppearance="@style/Text_Paragraph" />
+            app:subtitleTextAppearance="@style/Text_Paragraph"
+            app:layout_scrollFlags="scroll|enterAlways"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
