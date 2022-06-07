@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import androidx.recyclerview.widget.RecyclerView
 import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
 import br.com.bonaldi.customcalendar.databinding.CustomCalendarLayoutBinding
 import br.com.bonaldi.customcalendar.listeners.CalendarAdapterListener
@@ -14,7 +13,6 @@ import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
 import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
-import br.com.bonaldi.customcalendar.models.enums.CalendarViewTypeEnum
 
 class CustomCalendar : ConstraintLayout {
     constructor(context: Context) : this(context, null, 0)
@@ -40,11 +38,6 @@ class CustomCalendar : ConstraintLayout {
     private fun setAttributes(attrs: AttributeSet?){
         attrs?.let { attributeSet ->
             val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.CustomCalendar, 0, 0)
-            val calendarViewType = CalendarViewTypeEnum.values()[typedArray.getInt(
-                R.styleable.CustomCalendar_calendarViewType,
-                0
-            )]
-
             val selectionType = CalendarSelectionTypeEnum.values()[typedArray.getInt(
                 R.styleable.CustomCalendar_selectionType,
                 0
@@ -81,7 +74,6 @@ class CustomCalendar : ConstraintLayout {
                 }
             }
 
-            setCalendarViewType(calendarViewType)
             setCalendarSelectionType(selectionType)
             setupView()
             typedArray.recycle()
@@ -103,10 +95,6 @@ class CustomCalendar : ConstraintLayout {
 
     fun setOnCalendarChangedListener(onCalendarChangedListener: OnCalendarChangedListener){
         this.onCalendarChangedListener = onCalendarChangedListener
-    }
-
-    fun setCalendarViewType(type: CalendarViewTypeEnum){
-        //TODO: implement different viewType
     }
 
     fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
