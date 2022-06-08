@@ -29,6 +29,13 @@ import java.util.*
 
 class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapter<CalendarDayListItem, RecyclerView.ViewHolder>(MonthAdapterDiffer) {
     private val weekDaysList = DateFormatSymbols.getInstance(Locale.getDefault()).weekdays
+    private var calendarDaysList = mutableListOf<CalendarDayListItem>()
+    private var startRangeSelection: Pair<Int, CalendarDayListItem>? = null
+    private var endRangeSelection: Pair<Int, CalendarDayListItem>? = null
+    private var selectedDaysHashMap: SortedMap<Int, CalendarDayListItem> = sortedMapOf()
+    private var shouldBlockNewItems = false
+    private var emptyStateCount: Int = 0
+
     private val weekDaysShortNameList: List<CalendarDayListItem> by lazy {
         listOf<CalendarDayListItem>(
             CalendarDayListItem.CalendarWeekDayItem(weekDaysList[1][0].toString()),
@@ -40,13 +47,6 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             CalendarDayListItem.CalendarWeekDayItem(weekDaysList[7][0].toString())
         )
     }
-
-    private var calendarDaysList = mutableListOf<CalendarDayListItem>()
-    private var emptyStateCount: Int = 0
-    private var startRangeSelection: Pair<Int, CalendarDayListItem>? = null
-    private var endRangeSelection: Pair<Int, CalendarDayListItem>? = null
-    private var selectedDaysHashMap: SortedMap<Int, CalendarDayListItem> = sortedMapOf()
-    private var shouldBlockNewItems = false
 
     private val selectedDates: List<CalendarDayListItem>
         get() = selectedDaysHashMap.map { it.value }
