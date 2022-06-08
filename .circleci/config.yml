@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "_example-project/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "_example-calendar/build.gradle" }}
       - run:
           name: chmod permissions
           command: chmod +x ./gradlew
@@ -21,7 +21,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "_example-project/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "_example-calendar/build.gradle" }}
       - run:
           name: Run Tests
           command: ./gradlew lint test
@@ -29,5 +29,5 @@ jobs:
           path: _example-project/build/reports
           destination: reports
       - store_test_results:
-          path: _example-project/build/test-results
+          path: _example-calendar/build/test-results
       
