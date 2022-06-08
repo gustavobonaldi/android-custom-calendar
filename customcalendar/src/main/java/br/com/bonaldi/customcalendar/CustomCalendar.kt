@@ -34,6 +34,11 @@ class CustomCalendar : ConstraintLayout {
     private var calendarAdapter: CalendarAdapter? = null
     private var params = CalendarParams()
     private var onCalendarChangedListener: OnCalendarChangedListener? = null
+    var selectionType: CalendarSelectionTypeEnum
+        get() = params.typeParams.selectionType
+        set(value) {
+            params.typeParams.selectionType = value
+        }
 
     private fun setAttributes(attrs: AttributeSet?){
         attrs?.let { attributeSet ->
@@ -74,7 +79,7 @@ class CustomCalendar : ConstraintLayout {
                 }
             }
 
-            setCalendarSelectionType(selectionType)
+            this.selectionType = selectionType
             setupView()
             typedArray.recycle()
         }
@@ -95,10 +100,6 @@ class CustomCalendar : ConstraintLayout {
 
     fun setOnCalendarChangedListener(onCalendarChangedListener: OnCalendarChangedListener){
         this.onCalendarChangedListener = onCalendarChangedListener
-    }
-
-    fun setCalendarSelectionType(type: CalendarSelectionTypeEnum){
-        params.typeParams.selectionType = type
     }
 
     private fun setupView(){

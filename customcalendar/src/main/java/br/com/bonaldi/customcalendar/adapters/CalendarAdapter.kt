@@ -25,16 +25,15 @@ import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem.CalendarView
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
 class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapter<CalendarDayListItem, RecyclerView.ViewHolder>(MonthAdapterDiffer) {
     private val weekDaysList = listOf<CalendarDayListItem>(
-        CalendarDayListItem.CalendarWeekDayItem("D"),
         CalendarDayListItem.CalendarWeekDayItem("S"),
+        CalendarDayListItem.CalendarWeekDayItem("M"),
         CalendarDayListItem.CalendarWeekDayItem("T"),
-        CalendarDayListItem.CalendarWeekDayItem("Q"),
-        CalendarDayListItem.CalendarWeekDayItem("Q"),
-        CalendarDayListItem.CalendarWeekDayItem("S"),
+        CalendarDayListItem.CalendarWeekDayItem("W"),
+        CalendarDayListItem.CalendarWeekDayItem("T"),
+        CalendarDayListItem.CalendarWeekDayItem("F"),
         CalendarDayListItem.CalendarWeekDayItem("S"),
     )
 
@@ -42,7 +41,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     private var emptyStateCount: Int = 0
     private var startRangeSelection: Pair<Int, CalendarDayListItem>? = null
     private var endRangeSelection: Pair<Int, CalendarDayListItem>? = null
-    private var selectedDaysHashMap: HashMap<Int, CalendarDayListItem> = hashMapOf()
+    private var selectedDaysHashMap: SortedMap<Int, CalendarDayListItem> = sortedMapOf()
     private var shouldBlockNewItems = false
 
     private val selectedDates: List<CalendarDayListItem>
@@ -243,11 +242,12 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.tvCalendarDayItem.apply {
             (day as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
-                handleMapSelectionControl(calendarDay)
+                setStyle(day.isSelected, calendarDay.dayInfo)
                 calendarDay.dayInfo.day?.let {
                     text = it.toString()
                 }
-                setStyle(day.isSelected, calendarDay.dayInfo)
+                updateSelectedMap(calendarDay, position)
+                emitMultipleDateSelection()
                 itemView.setOnClickListener {
                     handleDateSelection(day, !day.isSelected, position) { shouldUpdateItem ->
                         if(shouldUpdateItem) {
@@ -259,7 +259,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             }
         }
 
-        private fun handleMapSelectionControl(calendarDay: CalendarDayListItem.CalendarDayItem){
+        private fun updateSelectedMap(calendarDay: CalendarDayListItem.CalendarDayItem, position: Int){
             when {
                 calendarDay.isSelected -> {
                     selectedDaysHashMap[position] = calendarDay
@@ -330,6 +330,15 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             }
         }
 
+        private fun emitMultipleDateSelection(){
+            when (listener.getCalendarSelectionType()) {
+                CalendarSelectionTypeEnum.MULTIPLE, CalendarSelectionTypeEnum.RANGE -> {
+                    val selectedDateList = selectedDates.mapNotNull { (it as? CalendarDayListItem.CalendarDayItem)?.dayInfo  }
+                    listener.onSelectDates(selectedDateList)
+                }
+            }
+        }
+
         private fun handleDateSelection(
             day: CalendarDayListItem.CalendarDayItem,
             isSelected: Boolean,
@@ -351,17 +360,16 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                     }
                 }
                 CalendarSelectionTypeEnum.MULTIPLE -> {
+                    val selectedDateList = selectedDates.mapNotNull { (it as? CalendarDayListItem.CalendarDayItem)?.dayInfo }
                     listener.getMaxMultiSelectionDates()?.let { maxSelection ->
-                        val selectedDateList = selectedDates.mapNotNull { (it as? CalendarDayListItem.CalendarDayItem)?.dayInfo }
                         val currentSelectedQuantity = selectedDateList.count()
                         when {
                             currentSelectedQuantity < maxSelection || !isSelected -> {
                                 onUpdateCurrentItem(true)
-                                listener.onSelectDates(selectedDateList)
                             }
                             else -> listener.onMaxSelectionReach(currentSelectedQuantity)
                         }
-                    } ?: run{onUpdateCurrentItem.invoke(true)}
+                    } ?: run { onUpdateCurrentItem.invoke(true) }
                 }
                 CalendarSelectionTypeEnum.RANGE -> {
                     when {
@@ -401,7 +409,6 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                     startRangeSelection?.let { start ->
                         endRangeSelection?.let { end ->
                             selectRangePosition(start.first, end.first)
-                            listener.onSelectDates(selectedDates.mapNotNull { (it as? CalendarDayListItem.CalendarDayItem)?.dayInfo })
                         }
                     }
                     onUpdateCurrentItem.invoke(startRangeSelection == null || endRangeSelection == null)

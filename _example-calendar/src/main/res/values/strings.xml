@@ -11,4 +11,9 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="calendar_selection_type">Calendar Selection Type: </string>
     <string name="max_selection_reached_message">Maximum quantity of %d has already been selected</string>
+    <string name="selected_dates_label">Selected Dates: </string>
+    <string name="selected_date_label">Selected Date: </string>
+    <string name="selected_date_range_value">from %s to %s</string>
+    <string name="selected_date_value">%s</string>
+    <string name="none_text">None</string>
 </resources>
