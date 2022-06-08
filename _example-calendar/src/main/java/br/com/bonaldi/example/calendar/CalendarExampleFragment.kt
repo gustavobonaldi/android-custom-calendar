@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import br.com.bonaldi.customcalendar.CustomCalendar
 import br.com.bonaldi.customcalendar.helpers.DateHelper.getTodayDate
 import br.com.bonaldi.customcalendar.helpers.IntHelper.orZero
 import br.com.bonaldi.customcalendar.listeners.OnCalendarChangedListener
@@ -16,6 +17,7 @@ import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 import br.com.bonaldi.example.calendar.ViewHelper.createSpinnerAdapter
 import br.com.bonaldi.example.calendar.databinding.FragmentCalendarExampleBinding
 import kotlinx.coroutines.launch
+import java.util.*
 
 class CalendarExampleFragment : Fragment() {
     private lateinit var binding: FragmentCalendarExampleBinding
@@ -30,53 +32,56 @@ class CalendarExampleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupCalendarConfigOptions()
+        lifecycleScope.launchWhenCreated {
+            setupCalendarConfigOptions()
+        }
     }
 
     private fun setupCalendarComponent(selectionTypeEnum: CalendarSelectionTypeEnum = CalendarSelectionTypeEnum.SINGLE) {
-        lifecycleScope.launch {
-            binding.customCalendarItem.apply {
-                setOnCalendarChangedListener(object : OnCalendarChangedListener {
-                    override fun onSelectDates(list: List<CalendarDay>) {
-                        //TODO("Not yet implemented")
-                    }
-
-                    override fun onSelectDate(date: CalendarDay?) {
-                        //TODO("Not yet implemented")
-                    }
-
-                    override fun onMaxSelectionReach(selectedQuantity: Int) {
-                        lifecycleScope.launch {
-                            Toast.makeText(
-                                context,
-                                context.resources.getString(
-                                    R.string.max_selection_reached_message,
-                                    selectedQuantity
-                                ),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                })
-                setMinDate(getTodayDate())
-                getTodayDate().apply {
-                    year = year.orZero() + 1
-                    setMaxDate(this)
-                }
-                setCalendarSelectionType(selectionTypeEnum)
-                refreshCalendar()
+        binding.customCalendarItem.apply {
+            addListener()
+            setMinDate(getTodayDate())
+            getTodayDate().apply {
+                year = year.orZero() + 1
+                setMaxDate(this)
             }
+            setCalendarSelectionType(selectionTypeEnum)
+            refreshCalendar()
         }
+    }
+
+    private fun CustomCalendar.addListener() {
+        setOnCalendarChangedListener(object : OnCalendarChangedListener {
+            override fun onSelectDates(list: List<CalendarDay>) {
+                //handle selected dates
+            }
+
+            override fun onSelectDate(date: CalendarDay?) {
+                //handle selected date
+            }
+
+            override fun onMaxSelectionReach(selectedQuantity: Int) {
+                showToast(
+                    context.resources.getString(
+                        R.string.max_selection_reached_message,
+                        selectedQuantity
+                    )
+                )
+            }
+        })
     }
 
     private fun setupCalendarConfigOptions() = binding.spinnerSelectionType.apply {
         lifecycleScope.launch {
-            val selectionTypeAdapter = createSpinnerAdapter(
+            adapter = createSpinnerAdapter(
                 requireContext(),
-                CalendarSelectionTypeEnum.values().map { it.name.toLowerCase().capitalize() }
-                    .toList()
+                CalendarSelectionTypeEnum.values().map { type ->
+                    type.name.lowercase(Locale.ROOT).replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+                    }
+                }
             )
-            adapter = selectionTypeAdapter
+
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
@@ -89,6 +94,16 @@ class CalendarExampleFragment : Fragment() {
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
+        }
+    }
+
+    private fun showToast(text: String) {
+        lifecycleScope.launch {
+            Toast.makeText(
+                context,
+                text,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
