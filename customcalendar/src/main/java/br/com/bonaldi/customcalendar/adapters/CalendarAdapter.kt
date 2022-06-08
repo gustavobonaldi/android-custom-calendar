@@ -23,19 +23,23 @@ import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem.CalendarViewType
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
+import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapter<CalendarDayListItem, RecyclerView.ViewHolder>(MonthAdapterDiffer) {
-    private val weekDaysList = listOf<CalendarDayListItem>(
-        CalendarDayListItem.CalendarWeekDayItem("S"),
-        CalendarDayListItem.CalendarWeekDayItem("M"),
-        CalendarDayListItem.CalendarWeekDayItem("T"),
-        CalendarDayListItem.CalendarWeekDayItem("W"),
-        CalendarDayListItem.CalendarWeekDayItem("T"),
-        CalendarDayListItem.CalendarWeekDayItem("F"),
-        CalendarDayListItem.CalendarWeekDayItem("S"),
-    )
+    private val weekDaysList = DateFormatSymbols.getInstance(Locale.getDefault()).weekdays
+    private val weekDaysShortNameList: List<CalendarDayListItem> by lazy {
+        listOf<CalendarDayListItem>(
+            CalendarDayListItem.CalendarWeekDayItem(weekDaysList[1][0].toString()),
+            CalendarDayListItem.CalendarWeekDayItem(weekDaysList[2][0].toString()),
+            CalendarDayListItem.CalendarWeekDayItem(weekDaysList[3][0].toString()),
+            CalendarDayListItem.CalendarWeekDayItem(weekDaysList[4][0].toString()),
+            CalendarDayListItem.CalendarWeekDayItem(weekDaysList[5][0].toString()),
+            CalendarDayListItem.CalendarWeekDayItem(weekDaysList[6][0].toString()),
+            CalendarDayListItem.CalendarWeekDayItem(weekDaysList[7][0].toString())
+        )
+    }
 
     private var calendarDaysList = mutableListOf<CalendarDayListItem>()
     private var emptyStateCount: Int = 0
@@ -88,7 +92,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     private fun mapDaysFromMonthAndAdd(calendar: Calendar) {
         val currentDate = calendar.get(Calendar.DAY_OF_MONTH)
         val maxMonthDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        calendarDaysList.addAll(weekDaysList)
+        calendarDaysList.addAll(weekDaysShortNameList)
         addEmptyDatesRecursive(calendar)
         for (i in currentDate..maxMonthDate) {
             calendarDaysList.add(
