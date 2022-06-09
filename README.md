@@ -1,16 +1,26 @@
 # Custom Calendar 
 
 Custom options:
-- SelectionType (Single, Multiple, Range);
-- MinDate, MaxDate, CurrentDate;
-- If selectionType is `Multiple` its possible to set max selection number;
-- Month Name, Week Day, Month Day (TextColor and BackgroundColor);
+- Set Minimum date, maximium date and current date;
+- Set color of bullet on current date;
+- Set fontFamily of textViews displayed on Calendar;
+- Set `TextColor` and `BackgroundColor` from: 
+  - Disabled days;
+  - Week day;
+  - Month day;
+  - Selected month day;
+  - Month name.
+
+- Dates selection type:
+  - Single;
+  - Multiple (with possibility to set maximum number);
+  - Range.
 
 # Single Selection
-<img src="https://user-images.githubusercontent.com/39656251/171787610-379a13dd-c7f6-4f3c-84d7-ec6f9c919517.png" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/39656251/172745717-348665c2-e103-4ac6-af56-e3c93f048cf1.png" width=50% height=50%>
 
 # Multiple Selection
-<img src="https://user-images.githubusercontent.com/39656251/171787632-6b4d86d8-e9bf-42f9-997a-7e00daee66e7.png" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/39656251/172745807-61541387-16b0-4ced-8396-8ef9ef823d7c.png" width=50% height=50%>
 
 # Range Selection
-<img src="https://user-images.githubusercontent.com/39656251/171787676-ca10caee-cd08-43f1-8a6b-618c5d0283b0.png" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/39656251/172745911-c68c1616-af36-4fb2-8005-f9535226feb2.png" width=50% height=50%>
