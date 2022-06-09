@@ -72,11 +72,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_selected_date_label"
             app:layout_constraintTop_toTopOf="@+id/tv_selected_date_label"
-            tools:visibility="visible" />
+            tools:visibility="visible" />r
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <br.com.bonaldi.customcalendar.CustomCalendar
-        android:id="@+id/custom_calendar_item"
+        android:id="@+id/custom_calendar_component"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10dp"

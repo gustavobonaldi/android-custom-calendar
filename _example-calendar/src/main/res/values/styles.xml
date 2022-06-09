@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CalendarStyle" parent="Theme.CustomCalendar">
+    <style name="CalendarStyle">
         <item name="selectionType">Single</item>
         <item name="calendarFontFamily">monospace</item>
         <item name="dayBackgroundColor">@color/white_app</item>

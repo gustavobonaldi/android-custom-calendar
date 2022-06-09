@@ -53,30 +53,24 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         get() = selectedDaysHashMap.firstNotNullOf { it.value }
 
     fun refreshCalendar() {
-        if(!shouldBlockNewItems) {
-            shouldBlockNewItems = true
-            val minDate = listener.getMinDate().toCalendar()
-            val maxDate =
-                listener.getMaxDate()?.toCalendar() ?: minDate.toCalendarDayInfo().toCalendar()
-                    .apply {
-                        add(Calendar.YEAR, 1)
-                    }
-            val currentDateToAdd = minDate
-            while (currentDateToAdd.get(Calendar.MONTH) != maxDate.get(Calendar.MONTH) || currentDateToAdd.get(
-                    Calendar.YEAR
-                ) != maxDate.get(Calendar.YEAR)
-            ) {
-                setupMonth(
-                    currentDateToAdd.get(Calendar.MONTH),
-                    currentDateToAdd.get(Calendar.YEAR)
-                )
-                currentDateToAdd.add(Calendar.MONTH, 1)
-            }
-            setupMonth(currentDateToAdd.get(Calendar.MONTH), currentDateToAdd.get(Calendar.YEAR))
-            submitList(calendarDaysList) {
-                calendarDaysList = currentList
-                shouldBlockNewItems = false
-            }
+        if (shouldBlockNewItems) return
+        shouldBlockNewItems = true
+        val minDate = listener.getMinDate().toCalendar()
+        val maxDate = listener.getMaxDate()?.toCalendar() ?: minDate.toCalendarDayInfo().toCalendar().apply {
+            add(Calendar.YEAR, 1)
+        }
+        val currentDateToAdd = minDate
+        while (currentDateToAdd.get(Calendar.MONTH) != maxDate.get(Calendar.MONTH) || currentDateToAdd.get(Calendar.YEAR) != maxDate.get(Calendar.YEAR)) {
+            setupMonth(
+                currentDateToAdd.get(Calendar.MONTH),
+                currentDateToAdd.get(Calendar.YEAR)
+            )
+            currentDateToAdd.add(Calendar.MONTH, 1)
+        }
+        setupMonth(currentDateToAdd.get(Calendar.MONTH), currentDateToAdd.get(Calendar.YEAR))
+        submitList(calendarDaysList) {
+            calendarDaysList = currentList
+            shouldBlockNewItems = false
         }
     }
 

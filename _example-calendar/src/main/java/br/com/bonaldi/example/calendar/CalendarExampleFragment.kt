@@ -45,15 +45,10 @@ class CalendarExampleFragment : Fragment() {
     }
 
     private fun setupCalendarComponent(selectionTypeEnum: CalendarSelectionTypeEnum = CalendarSelectionTypeEnum.SINGLE) {
-        binding.customCalendarItem.apply {
+        binding.customCalendarComponent.apply {
             addListener()
-            setMinDate(getTodayDate())
-            getTodayDate().apply {
-                year = year.orZero() + 1
-                setMaxDate(this)
-            }
-            setDisabledDays(listOf(CalendarDay(15, 6, 2022), CalendarDay(21, 6, 2022)))
             setSelectionType(selectionTypeEnum)
+            setMinDate(getTodayDate())
             refreshCalendar()
         }
     }
@@ -62,60 +57,62 @@ class CalendarExampleFragment : Fragment() {
         selectionType = type
         binding.tvSelectedDateLabel.text = when (selectionType) {
             CalendarSelectionTypeEnum.SINGLE -> context.resources.getString(R.string.selected_date_label)
-            CalendarSelectionTypeEnum.MULTIPLE, CalendarSelectionTypeEnum.RANGE -> context.resources.getString(R.string.selected_dates_label)
+            CalendarSelectionTypeEnum.MULTIPLE, CalendarSelectionTypeEnum.RANGE -> context.resources.getString(
+                R.string.selected_dates_label
+            )
         }
     }
 
     private fun CustomCalendar.addListener() {
         setOnCalendarChangedListener(object : OnCalendarChangedListener {
             override fun onSelectDates(list: List<CalendarDay>) {
-                if (list.isNotEmpty()) {
-                    when (selectionType) {
-                        CalendarSelectionTypeEnum.MULTIPLE -> {
-                            setSelectedDatesVisibility(list.count() > 1)
-                            when {
-                                list.count() == 1 -> {
-                                    binding.tvSelectedDateValue.text = context.resources.getString(
-                                        R.string.selected_date_value,
-                                        list.firstOrNull()?.toString()
-                                    )
-                                }
-                                else -> {
-                                    list.map {
-
-                                    }
-                                    selectedDatesAdapter.clear()
-                                    selectedDatesAdapter.addAll(list.map { it.toString() })
-                                }
-                            }
-                        }
-                        CalendarSelectionTypeEnum.RANGE -> {
-                            setSelectedDatesVisibility(false)
-                            binding.tvSelectedDateValue.text = when {
-                                list.count() == 1 -> context.resources.getString(
+                if (list.isEmpty()) {
+                    binding.tvSelectedDateValue.text = context.resources.getString(R.string.none_text)
+                    return
+                }
+                when (selectionType) {
+                    CalendarSelectionTypeEnum.MULTIPLE -> {
+                        setSelectedDatesVisibility(list.count() > 1)
+                        when {
+                            list.count() == 1 -> {
+                                binding.tvSelectedDateValue.text = context.resources.getString(
                                     R.string.selected_date_value,
                                     list.firstOrNull()?.toString()
                                 )
-                                else -> context.resources.getString(
-                                    R.string.selected_date_range_value,
-                                    list.firstOrNull()?.toString(),
-                                    list.lastOrNull()?.toString()
-                                )
+                            }
+                            else -> {
+                                selectedDatesAdapter.clear()
+                                selectedDatesAdapter.addAll(list.map { it.toString() })
                             }
                         }
                     }
-                } else {
-                    binding.tvSelectedDateValue.text =
-                        context.resources.getString(R.string.none_text)
+                    CalendarSelectionTypeEnum.RANGE -> {
+                        setSelectedDatesVisibility(false)
+                        binding.tvSelectedDateValue.text = when {
+                            list.count() == 1 -> context.resources.getString(
+                                R.string.selected_date_value,
+                                list.firstOrNull()?.toString()
+                            )
+                            else -> context.resources.getString(
+                                R.string.selected_date_range_value,
+                                list.firstOrNull()?.toString(),
+                                list.lastOrNull()?.toString()
+                            )
+                        }
+                    }
                 }
             }
 
             override fun onSelectDate(date: CalendarDay?) {
                 setSelectedDatesVisibility(false)
-                when(selectionType){
+                when (selectionType) {
                     CalendarSelectionTypeEnum.SINGLE -> {
                         date?.toString()?.let {
-                            binding.tvSelectedDateValue.text = context.resources.getString(R.string.selected_date_value, it)
+                            binding.tvSelectedDateValue.text =
+                                context.resources.getString(R.string.selected_date_value, it)
+                        } ?: kotlin.run {
+                            binding.tvSelectedDateValue.text =
+                                context.resources.getString(R.string.none_text)
                         }
                     }
                 }
@@ -163,9 +160,9 @@ class CalendarExampleFragment : Fragment() {
         }
     }
 
-    private fun setSelectedDatesVisibility(showSpinner: Boolean){
-        binding.tvSelectedDateValue.visibility = if(showSpinner) View.GONE else View.VISIBLE
-        binding.spinnerSelectedDates.visibility = if(showSpinner) View.VISIBLE else View.GONE
+    private fun setSelectedDatesVisibility(showSpinner: Boolean) {
+        binding.tvSelectedDateValue.visibility = if (showSpinner) View.GONE else View.VISIBLE
+        binding.spinnerSelectedDates.visibility = if (showSpinner) View.VISIBLE else View.GONE
     }
 
     private fun showToast(text: String) {
