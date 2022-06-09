@@ -8,4 +8,5 @@
     <color name="calendar_month_color">#3B4149</color>
     <color name="calendar_week_day_color">#4C535D</color>
     <color name="calendar_day_color">#8793A3</color>
+    <color name="disabled_day_color">#8793A3</color>
 </resources>

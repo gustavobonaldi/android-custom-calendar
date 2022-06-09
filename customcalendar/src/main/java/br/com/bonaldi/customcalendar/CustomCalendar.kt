@@ -67,6 +67,10 @@ class CustomCalendar : LinearLayout {
         params.dateParams.maxDate = calendarDay
     }
 
+    fun setDisabledDays(list: List<CalendarDay>){
+        params.dateParams.disabledDays = list
+    }
+
     fun refreshCalendar(){
         setupView()
         calendarAdapter?.refreshCalendar()
@@ -130,6 +134,10 @@ class CustomCalendar : LinearLayout {
 
         override fun getMinDate(): CalendarDay {
             return this@CustomCalendar.params.dateParams.minDate
+        }
+
+        override fun getDisabledDays(): List<CalendarDay> {
+            return this@CustomCalendar.params.dateParams.disabledDays
         }
     }
 }

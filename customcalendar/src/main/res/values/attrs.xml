@@ -16,6 +16,8 @@
         <attr name="dayTextColor" format="color"/>
         <attr name="selectedDayBackgroundColor" format="color"/>
         <attr name="selectedDayTextColor" format="color"/>
+        <attr name="disabledDayTextColor" format="color"/>
+        <attr name="disabledDayBackgroundColor" format="color"/>
         <attr name="monthBackgroundColor" format="color"/>
         <attr name="monthTextColor" format="color"/>
         <attr name="calendarFontFamily" format="string" />

@@ -90,13 +90,22 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
     private fun mapDaysFromMonthAndAdd(calendar: Calendar) {
         val currentDate = calendar.get(Calendar.DAY_OF_MONTH)
         val maxMonthDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
         calendarDaysList.addAll(weekDaysShortNameList)
         addEmptyDatesRecursive(calendar)
         for (i in currentDate..maxMonthDate) {
+            val day = calendar.toCalendarDayInfo()
             calendarDaysList.add(
                 CalendarDayListItem.CalendarDayItem(
-                    calendar.toCalendarDayInfo(),
-                    isSelected = false
+                    day,
+                    isSelected = false,
+                    isEnabled = when {
+                        i < listener.getMinDate().day.orZero() && month == listener.getMinDate().month && year == listener.getMinDate().year -> false
+                        i > listener.getMaxDate()?.day.orZero() && month == listener.getMaxDate()?.month && year == listener.getMaxDate()?.day -> false
+                        listener.getDisabledDays().contains(day) -> false
+                        else -> true
+                    }
                 )
             )
             calendar.add(Calendar.DATE, 1)
@@ -214,7 +223,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.tvCalendarDayItem.apply {
             (day as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
-                formatCalendarDay(day.isSelected, calendarDay.dayInfo)
+                formatCalendarDay(calendarDay)
                 calendarDay.dayInfo.day?.let {
                     text = it.toString()
                 }
@@ -242,14 +251,15 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             }
         }
 
-        private fun formatCalendarDay(isSelected: Boolean, calendarDay: CalendarDay) = binding.tvCalendarDayItem.apply {
-            binding.tvCalendarDayItem.isSelected = isSelected
+        private fun formatCalendarDay(calendarDayItem: CalendarDayListItem.CalendarDayItem) = binding.tvCalendarDayItem.apply {
+            isSelected = calendarDayItem.isSelected
+            isEnabled = calendarDayItem.isEnabled
             when {
-                calendarDay.isToday() -> {
-                    binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ContextCompat.getDrawable(context, R.drawable.ic_current_date_point))
+                calendarDayItem.dayInfo.isToday() -> {
+                    setCompoundDrawablesWithIntrinsicBounds(null, null, null, ContextCompat.getDrawable(context, R.drawable.ic_current_date_point))
                 }
                 else -> {
-                    binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+                    setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
                 }
             }
         }

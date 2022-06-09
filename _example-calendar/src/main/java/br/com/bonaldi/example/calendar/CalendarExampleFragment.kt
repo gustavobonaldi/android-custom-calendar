@@ -52,6 +52,7 @@ class CalendarExampleFragment : Fragment() {
                 year = year.orZero() + 1
                 setMaxDate(this)
             }
+            setDisabledDays(listOf(CalendarDay(15, 6, 2022), CalendarDay(21, 6, 2022)))
             setSelectionType(selectionTypeEnum)
             refreshCalendar()
         }

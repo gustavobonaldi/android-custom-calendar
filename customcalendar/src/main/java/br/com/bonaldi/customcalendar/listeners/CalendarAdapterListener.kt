@@ -10,4 +10,5 @@ interface CalendarAdapterListener: OnCalendarChangedListener {
     fun getCalendarParams(): CalendarParams
     fun getMaxDate(): CalendarDay?
     fun getMinDate(): CalendarDay
+    fun getDisabledDays(): List<CalendarDay>
 }
