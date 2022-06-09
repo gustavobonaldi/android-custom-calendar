@@ -46,7 +46,7 @@ Create a style with the attributes you want:
     </style>
 ```
 
-Then add the component to your layout, as follow:
+Add the component to your layout and set as componenent Theme, as follows:
 ```
   <br.com.bonaldi.customcalendar.CustomCalendar
         android:id="@+id/custom_calendar_component"
