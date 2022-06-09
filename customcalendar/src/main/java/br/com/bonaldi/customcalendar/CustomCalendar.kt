@@ -3,7 +3,7 @@ package br.com.bonaldi.customcalendar
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import br.com.bonaldi.customcalendar.adapters.CalendarAdapter
@@ -14,17 +14,18 @@ import br.com.bonaldi.customcalendar.models.day.CalendarDay
 import br.com.bonaldi.customcalendar.models.day.CalendarDayListItem
 import br.com.bonaldi.customcalendar.models.enums.CalendarSelectionTypeEnum
 
-class CustomCalendar : ConstraintLayout {
-    constructor(context: Context) : this(context, null, 0)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+class CustomCalendar : LinearLayout {
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, R.attr.calendarDefaultStyle)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): this(context, attrs, defStyleAttr, R.style.Theme_CustomCalendar)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
         context,
         attrs,
-        defStyleAttr
+        defStyleAttr,
+        defStyleRes
     ){
-        setAttributes(attrs)
+        setAttributes(attrs, defStyleAttr, defStyleRes)
     }
-    
 
     private val binding = CustomCalendarLayoutBinding.inflate(
         LayoutInflater.from(context),
@@ -40,9 +41,9 @@ class CustomCalendar : ConstraintLayout {
             params.typeParams.selectionType = value
         }
 
-    private fun setAttributes(attrs: AttributeSet?){
+    private fun setAttributes(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int){
         attrs?.let { attributeSet ->
-            val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.CustomCalendar, 0, 0)
+            val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.CustomCalendar, defStyleAttr, 0)
             val selectionType = CalendarSelectionTypeEnum.values()[typedArray.getInt(
                 R.styleable.CustomCalendar_selectionType,
                 0
@@ -50,33 +51,6 @@ class CustomCalendar : ConstraintLayout {
 
             typedArray.getInt(R.styleable.CustomCalendar_maxMultiSelectionDates, 0).takeIf { it != 0 }?.let {
                 setMaxMultiSelectionDates(it)
-            }
-
-            params.colorParams.apply {
-                typedArray.getColorStateList(R.styleable.CustomCalendar_weekDayTextColor)?.let { weekDayTextColor ->
-                    this.weekDayTextColor = weekDayTextColor
-                }
-                typedArray.getColor(R.styleable.CustomCalendar_weekDayBackgroundColor, 0).takeIf { it != 0 }?.let { weekDayBackgroundColor ->
-                    this.weekDayBackgroundColor = weekDayBackgroundColor
-                }
-                typedArray.getColorStateList(R.styleable.CustomCalendar_dayTextColor)?.let { dayTextColor ->
-                    this.dayTextColor = dayTextColor
-                }
-                typedArray.getColor(R.styleable.CustomCalendar_dayBackgroundColor, 0).takeIf { it != 0 }?.let { dayBackgroundColor ->
-                    this.dayBackgroundColor = dayBackgroundColor
-                }
-                typedArray.getColorStateList(R.styleable.CustomCalendar_selectedDayTextColor)?.let { selectedDayTextColor ->
-                    this.selectedDayTextColor = selectedDayTextColor
-                }
-                typedArray.getColor(R.styleable.CustomCalendar_selectedDayBackgroundColor, 0).takeIf { it != 0 }?.let { selectedDayBackgroundColor ->
-                    this.selectedDayBackgroundColor = selectedDayBackgroundColor
-                }
-                typedArray.getColorStateList(R.styleable.CustomCalendar_monthTextColor)?.let { monthTextColor ->
-                    this.monthTextColor = monthTextColor
-                }
-                typedArray.getColor(R.styleable.CustomCalendar_monthBackgroundColor, 0).takeIf { it != 0 }?.let { monthBackgroundColor ->
-                    this.monthBackgroundColor = monthBackgroundColor
-                }
             }
 
             this.selectionType = selectionType

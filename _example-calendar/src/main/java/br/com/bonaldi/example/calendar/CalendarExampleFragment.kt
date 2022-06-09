@@ -176,12 +176,4 @@ class CalendarExampleFragment : Fragment() {
             ).show()
         }
     }
-
-    private fun formatListOfDates(list: List<CalendarDay>): String{
-        val text = ""
-        list.map {
-            text.plus("- $it")
-        }
-        return text
-    }
 }

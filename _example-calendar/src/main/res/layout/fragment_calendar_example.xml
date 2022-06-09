@@ -80,19 +80,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10dp"
-        app:dayBackgroundColor="@color/white"
-        app:dayTextColor="@color/black"
+        android:theme="@style/CalendarStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/config_container"
-        app:maxMultiSelectionDates="10"
-        app:monthBackgroundColor="@color/black"
-        app:monthTextColor="@color/white_app"
-        app:selectedDayBackgroundColor="@color/calendar_month_color"
-        app:selectedDayTextColor="@color/white"
-        app:selectionType="Single"
-        app:weekDayBackgroundColor="@color/black"
-        app:weekDayTextColor="@color/white" />
+        app:layout_constraintTop_toBottomOf="@id/config_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

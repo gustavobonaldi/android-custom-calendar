@@ -1,26 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppBaseText">
-        <item name="android:fontFamily">monospace</item>
+    <style name="Theme.CustomCalendar" parent="Theme.MaterialComponents.DayNight">
+        <item name="selectionType">Single</item>
+        <item name="calendarFontFamily">monospace</item>
+        <item name="dayBackgroundColor">@color/white_app</item>
+        <item name="dayTextColor">@color/black</item>
+        <item name="monthBackgroundColor">@color/black</item>
+        <item name="monthTextColor">@color/white_app</item>
+        <item name="weekDayBackgroundColor">@color/black</item>
+        <item name="weekDayTextColor">@color/white_app</item>
+        <item name="selectedDayBackgroundColor">@color/black</item>
+        <item name="selectedDayTextColor">@color/white_app</item>
+        <item name="currentDateColor">@color/black</item>
     </style>
 
-    <style name="Text_Title" parent="AppBaseText">
+    <style name="CustomCalendarBaseText">
+        <item name="android:fontFamily">?attr/calendarFontFamily</item>
+    </style>
+
+    <style name="Calendar_Text_Title" parent="CustomCalendarBaseText">
         <item name="android:textSize">24sp</item>
     </style>
 
-    <style name="Text_Heading" parent="AppBaseText">
+    <style name="Calendar_Text_Heading" parent="CustomCalendarBaseText">
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="Text_SubHeading" parent="AppBaseText">
+    <style name="Calendar_Text_SubHeading" parent="CustomCalendarBaseText">
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="Text_SubHeading_2" parent="AppBaseText">
+    <style name="Calendar_Text_SubHeading_2" parent="CustomCalendarBaseText">
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="Text_Paragraph" parent="AppBaseText">
+    <style name="Calendar_Text_Paragraph" parent="CustomCalendarBaseText">
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="CalendarMonthName" parent="Calendar_Text_SubHeading">
+        <item name="android:textColor">?attr/monthTextColor</item>
+        <item name="android:background">?attr/monthBackgroundColor</item>
+    </style>
+
+    <style name="CalendarDayItem" parent="Calendar_Text_Paragraph">
+        <item name="android:background">@color/calendar_day_item_background</item>
+        <item name="android:textColor">@color/calendar_day_item_text_color</item>
+    </style>
+
+    <style name="CalendarEmptyItem">
+        <item name="android:background">?attr/dayBackgroundColor</item>
+    </style>
+
+    <style name="CalendarWeekDayItem" parent="Calendar_Text_Paragraph">
+        <item name="android:textColor">?weekDayTextColor</item>
+        <item name="android:background">?weekDayBackgroundColor</item>
+    </style>
+
+    <style name="CalendarSelectedDay">
+        <item name="android:drawable">?attr/selectedDayBackgroundColor</item>
     </style>
 </resources>

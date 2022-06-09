@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="DefaultStyleTheme">
+        <attr name="calendarDefaultStyle" format="reference"/>
+    </declare-styleable>
     <declare-styleable name="CustomCalendar">
         <attr name="selectionType" format="enum">
             <enum name="Single" value="0"/>
@@ -15,5 +18,7 @@
         <attr name="selectedDayTextColor" format="color"/>
         <attr name="monthBackgroundColor" format="color"/>
         <attr name="monthTextColor" format="color"/>
+        <attr name="calendarFontFamily" format="string" />
+        <attr name="currentDateColor" format="color"/>
     </declare-styleable>
 </resources>

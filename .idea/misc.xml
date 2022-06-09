@@ -10,10 +10,13 @@
         <entry key="_example-calendar/src/main/res/layout/calendar_example_spinner_item.xml" value="0.24947916666666667" />
         <entry key="_example-calendar/src/main/res/layout/content_main.xml" value="0.24947916666666667" />
         <entry key="_example-calendar/src/main/res/layout/fragment_calendar_config.xml" value="0.2721099853515625" />
-        <entry key="_example-calendar/src/main/res/layout/fragment_calendar_example.xml" value="0.6832440703902066" />
+        <entry key="_example-calendar/src/main/res/layout/fragment_calendar_example.xml" value="0.4198071866783523" />
         <entry key="_example-calendar/src/main/res/layout/fragment_first.xml" value="0.4026268115942029" />
         <entry key="_example-calendar/src/main/res/layout/fragment_second.xml" value="0.4026268115942029" />
         <entry key="_example-calendar/src/main/res/menu/menu_main.xml" value="0.46510416666666665" />
+        <entry key="customcalendar/src/main/res/drawable/calendar_day_item_background.xml" value="0.303" />
+        <entry key="customcalendar/src/main/res/drawable/calendar_day_item_text_color.xml" value="0.237" />
+        <entry key="customcalendar/src/main/res/drawable/ic_current_date_point.xml" value="0.303" />
         <entry key="customcalendar/src/main/res/layout/calendar_day_item.xml" value="0.4702186695043591" />
         <entry key="customcalendar/src/main/res/layout/calendar_day_item_empty.xml" value="0.24947916666666667" />
         <entry key="customcalendar/src/main/res/layout/calendar_month_item.xml" value="0.4026268115942029" />

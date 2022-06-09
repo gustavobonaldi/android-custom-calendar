@@ -2,11 +2,11 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tv_calendar_day_item"
-    style="@style/Text_Paragraph"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white_app"
     android:gravity="center"
     android:paddingTop="14dp"
     android:paddingBottom="14dp"
+    style="@style/CalendarWeekDayItem"
+    tools:background="@color/white_app"
     tools:text="31" />

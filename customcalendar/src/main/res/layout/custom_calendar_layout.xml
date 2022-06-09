@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white_app"
-    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+    tools:parentTag="android.widget.LinearLayout"
+    android:theme="@style/Theme.CustomCalendar">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_calendar_month"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white_app"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
@@ -20,3 +20,4 @@
         tools:itemCount="31"
         tools:listitem="@layout/calendar_day_item" />
 </merge>
+

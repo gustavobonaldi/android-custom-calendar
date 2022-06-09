@@ -1,7 +1,5 @@
 package br.com.bonaldi.customcalendar.adapters
 
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -186,7 +184,6 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
 
     inner class CalendarMonthNameViewHolder(private val binding: CalendarMonthItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.apply {
-            setStyle()
             (day as? CalendarDayListItem.CalendarMonthHeaderItem)?.let { weekDay ->
                 if(position != 0){
                     (tvMonthName.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
@@ -200,43 +197,14 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
                 }
             }
         }
-
-        private fun setStyle() = binding.apply {
-            listener.getCalendarParams().colorParams.apply {
-                monthTextColor?.let {
-                    tvMonthName.setTextColor(it)
-                }
-                monthBackgroundColor?.let {
-                    tvMonthName.background?.colorFilter = PorterDuffColorFilter(
-                        it,
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-                }
-            }
-        }
     }
 
     inner class CalendarWeekDayViewHolder(private val binding: CalendarWeekDayItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.apply {
-            setStyle()
             (day as? CalendarDayListItem.CalendarWeekDayItem)?.let { weekDay ->
                 tvCalendarDayItem.apply {
                     text = weekDay.name
-                }
-            }
-        }
-
-        private fun setStyle() = binding.apply {
-            listener.getCalendarParams().colorParams.apply {
-                weekDayTextColor?.let {
-                    tvCalendarDayItem.setTextColor(it)
-                }
-                weekDayBackgroundColor?.let {
-                    tvCalendarDayItem.background?.colorFilter = PorterDuffColorFilter(
-                        it,
-                        PorterDuff.Mode.SRC_ATOP
-                    )
                 }
             }
         }
@@ -246,7 +214,7 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(day: CalendarDayListItem, position: Int) = binding.tvCalendarDayItem.apply {
             (day as? CalendarDayListItem.CalendarDayItem)?.let { calendarDay ->
-                setStyle(day.isSelected, calendarDay.dayInfo)
+                formatCalendarDay(day.isSelected, calendarDay.dayInfo)
                 calendarDay.dayInfo.day?.let {
                     text = it.toString()
                 }
@@ -274,62 +242,14 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
             }
         }
 
-        private fun setStyle(isSelected: Boolean, calendarDay: CalendarDay) = binding.tvCalendarDayItem.apply {
-            listener.getCalendarParams().colorParams.apply {
-                when {
-                    isSelected -> {
-                        selectedDayTextColor?.let {
-                            setTextColor(it)
-                        } ?: kotlin.run {
-                            setTextColor(
-                                ContextCompat.getColor(
-                                    itemView.context,
-                                    R.color.white_app
-                                )
-                            )
-                        }
-                        selectedDayBackgroundColor?.let {
-                            background?.colorFilter = PorterDuffColorFilter(
-                                it,
-                                PorterDuff.Mode.SRC_ATOP
-                            )
-                        } ?: kotlin.run {
-                            setBackgroundColor(
-                                ContextCompat.getColor(
-                                    itemView.context,
-                                    R.color.black
-                                )
-                            )
-                        }
-                    }
-                    else -> {
-                        dayTextColor?.let {
-                            setTextColor(it)
-                        } ?: kotlin.run {
-                            setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
-                        }
-                        dayBackgroundColor?.let {
-                            background?.colorFilter = PorterDuffColorFilter(
-                                it,
-                                PorterDuff.Mode.SRC_ATOP
-                            )
-                        } ?: kotlin.run {
-                            setBackgroundColor(
-                                ContextCompat.getColor(
-                                    itemView.context,
-                                    R.color.calendar_day_color
-                                )
-                            )
-                        }
-                    }
+        private fun formatCalendarDay(isSelected: Boolean, calendarDay: CalendarDay) = binding.tvCalendarDayItem.apply {
+            binding.tvCalendarDayItem.isSelected = isSelected
+            when {
+                calendarDay.isToday() -> {
+                    binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ContextCompat.getDrawable(context, R.drawable.ic_current_date_point))
                 }
-                when {
-                    calendarDay.isToday() -> {
-                        binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ContextCompat.getDrawable(context, R.drawable.ic_current_date_point))
-                    }
-                    else -> {
-                        binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-                    }
+                else -> {
+                    binding.tvCalendarDayItem.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
                 }
             }
         }
@@ -455,16 +375,6 @@ class CalendarAdapter(private val listener: CalendarAdapterListener) : ListAdapt
 
     inner class EmptyStateViewHolder(private val binding: CalendarDayItemEmptyBinding): RecyclerView.ViewHolder(binding.root){
         fun bindItem() = binding.viewEmptyState.apply {
-            listener.getCalendarParams().colorParams.apply {
-                dayBackgroundColor?.let {
-                    background?.colorFilter = PorterDuffColorFilter(
-                        it,
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-                } ?: kotlin.run {
-                    setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.calendar_day_color))
-                }
-            }
         }
     }
 
